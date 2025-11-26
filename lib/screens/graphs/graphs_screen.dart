@@ -4,6 +4,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:spend_mate/providers/transaction_provider.dart';
 import 'dart:math';
 
+import '../../providers/settings_provider.dart';
+
 class GraphsScreen extends StatelessWidget {
   const GraphsScreen({super.key});
 

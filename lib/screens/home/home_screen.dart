@@ -6,7 +6,6 @@ import 'package:spend_mate/screens/transactions/add_transaction_screen.dart';
 import 'package:spend_mate/widgets/dynamic_header.dart';
 import 'package:spend_mate/widgets/summary_card.dart';
 import 'package:spend_mate/widgets/transaction_item.dart';
-import 'package:intl/intl.dart';
 
 import 'base_scaffold.dart';
 

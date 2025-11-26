@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/settings_provider.dart';
 
 class DynamicHeader extends StatelessWidget {
   final double totalBalance;
@@ -9,6 +12,8 @@ class DynamicHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currency = Provider.of<SettingsProvider>(context).selectedCurrency;
+
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: const BoxDecoration(
@@ -28,7 +33,7 @@ class DynamicHeader extends StatelessWidget {
           const Text('Spend Mate', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           const Text('Total Balance', style: TextStyle(color: Colors.white70, fontSize: 16)),
-          Text('₩${totalBalance.toStringAsFixed(0)}', style: const TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold)),
+          Text('$currency${totalBalance.toStringAsFixed(0)}', style: const TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
           Row(
             children: <Widget>[
@@ -47,7 +52,7 @@ class DynamicHeader extends StatelessWidget {
                             Text('Income', style: TextStyle(color: Colors.white, fontSize: 16)),
                           ],
                         ),
-                        Text('₩${totalIncome.toStringAsFixed(0)}', style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                        Text('$currency${totalIncome.toStringAsFixed(0)}', style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
@@ -69,7 +74,7 @@ class DynamicHeader extends StatelessWidget {
                             Text('Expense', style: TextStyle(color: Colors.white, fontSize: 16)),
                           ],
                         ),
-                        Text('₩${totalExpense.toStringAsFixed(0)}', style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                        Text('$currency${totalExpense.toStringAsFixed(0)}', style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../models/transaction_model.dart';
+import '../providers/settings_provider.dart';
 import '../screens/transactions/transaction_detail_screen.dart';
 
 class TransactionItem extends StatelessWidget {
@@ -11,6 +13,7 @@ class TransactionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currency = Provider.of<SettingsProvider>(context).selectedCurrency;
 
     final String name = tx.category;
     final double amount = tx.amount;
@@ -28,7 +31,7 @@ class TransactionItem extends StatelessWidget {
       title: Text(name),
       subtitle: Text(date),
       trailing: Text(
-        '${isIncome ? '+' : '-'}₩${amount.toStringAsFixed(0)}',
+        '${isIncome ? '+' : '-'}$currency${amount.toStringAsFixed(0)}',
         style: TextStyle(
           color: isIncome ? Colors.green : Colors.red,
           fontWeight: FontWeight.bold,

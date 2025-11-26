@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/settings_provider.dart';
 
 class SummaryCard extends StatelessWidget {
   final String title;
@@ -9,6 +12,8 @@ class SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currency = Provider.of<SettingsProvider>(context).selectedCurrency;
+
     return Card(
       elevation: 0.5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -26,14 +31,14 @@ class SummaryCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('Income', style: TextStyle(color: Colors.green)),
-                    Text('₩${income.toStringAsFixed(0)}', style: const TextStyle(fontSize: 16, color: Colors.green)),
+                    Text('$currency${income.toStringAsFixed(0)}', style: const TextStyle(fontSize: 16, color: Colors.green)),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     const Text('Expense', style: TextStyle(color: Colors.red)),
-                    Text('₩${expense.toStringAsFixed(0)}', style: const TextStyle(fontSize: 16, color: Colors.red)),
+                    Text('$currency${expense.toStringAsFixed(0)}', style: const TextStyle(fontSize: 16, color: Colors.red)),
                   ],
                 ),
               ],

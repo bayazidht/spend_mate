@@ -5,6 +5,8 @@ import 'package:spend_mate/providers/transaction_provider.dart';
 import 'package:spend_mate/screens/transactions/add_transaction_screen.dart';
 import 'package:intl/intl.dart';
 
+import '../../providers/settings_provider.dart';
+
 class TransactionDetailScreen extends StatelessWidget {
   final TransactionModel transaction;
 
@@ -13,6 +15,7 @@ class TransactionDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<TransactionProvider>(context, listen: false);
+    final currency = Provider.of<SettingsProvider>(context).selectedCurrency;
     final isIncome = transaction.type == TransactionType.income;
 
     Future<void> _deleteTransaction() async {
@@ -89,7 +92,7 @@ class TransactionDetailScreen extends StatelessWidget {
                       style: TextStyle(fontSize: 18, color: isIncome ? Colors.green : Colors.red),
                     ),
                     Text(
-                      '₩${transaction.amount.toStringAsFixed(2)}',
+                      '$currency${transaction.amount.toStringAsFixed(2)}',
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,

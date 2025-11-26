@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsProvider with ChangeNotifier {
   static const String _currencyKey = 'selectedCurrency';
-  String _selectedCurrency = '₩'; // Default currency
+  String _selectedCurrency = '€';
 
   String get selectedCurrency => _selectedCurrency;
 
@@ -13,7 +13,7 @@ class SettingsProvider with ChangeNotifier {
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    _selectedCurrency = prefs.getString(_currencyKey) ?? '₩';
+    _selectedCurrency = prefs.getString(_currencyKey) ?? '€';
     notifyListeners();
   }
 

@@ -15,7 +15,7 @@ class SettingsScreen extends StatelessWidget {
     final authService = Provider.of<AuthService>(context, listen: false);
 
     final settingsProvider = Provider.of<SettingsProvider>(context);
-    final availableCurrencies = ['₩', '\$', '€', '£', '₹'];
+    final availableCurrencies = ['€', '\$', '₩', '£', '₹'];
 
     return Scaffold(
       appBar: AppBar(

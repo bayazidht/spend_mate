@@ -7,6 +7,8 @@ import 'package:spend_mate/providers/category_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
+import '../../providers/settings_provider.dart';
+
 class AddTransactionScreen extends StatefulWidget {
   final TransactionModel? transactionToEdit;
 
@@ -40,10 +42,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       _amount = tx.amount;
       _selectedCategoryName = tx.category;
       _date = tx.date;
-      _notes = tx.notes!;
+      _notes = tx.notes;
 
       _amountController.text = tx.amount.toStringAsFixed(2);
-      _notesController.text = tx.notes!;
+      _notesController.text = tx.notes;
     }
   }
 
@@ -137,6 +139,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   @override
   Widget build(BuildContext context) {
     final categoryProvider = Provider.of<CategoryProvider>(context);
+    final currency = Provider.of<SettingsProvider>(context).selectedCurrency;
     final isEditing = widget.transactionToEdit != null;
 
     final List<app_category.CategoryModel> currentCategories =
@@ -202,7 +205,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 controller: _amountController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: 'Amount (₩)',
+                  labelText: 'Amount ($currency)',
                   prefixIcon: const Icon(Icons.money),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                 ),
