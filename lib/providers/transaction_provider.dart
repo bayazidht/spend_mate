@@ -50,6 +50,43 @@ class TransactionProvider with ChangeNotifier {
     _totalExpense = expense;
   }
 
+  Map<String, dynamic> getChartData() {
+    Map<String, double> categoryExpenses = {};
+    double totalExpense = 0.0;
+
+    for (var tx in _transactions) {
+      if (tx.type == TransactionType.expense) {
+        totalExpense += tx.amount;
+        categoryExpenses[tx.category] = (categoryExpenses[tx.category] ?? 0) + tx.amount;
+      }
+    }
+
+    Map<String, Map<String, double>> monthlySummary = {};
+    final now = DateTime.now();
+
+    for (var tx in _transactions) {
+      final monthKey = '${tx.date.year}-${tx.date.month.toString().padLeft(2, '0')}';
+
+      monthlySummary.putIfAbsent(monthKey, () => {'income': 0.0, 'expense': 0.0});
+
+      if (tx.type == TransactionType.income) {
+        monthlySummary[monthKey]!['income'] = monthlySummary[monthKey]!['income']! + tx.amount;
+      } else {
+        monthlySummary[monthKey]!['expense'] = monthlySummary[monthKey]!['expense']! + tx.amount;
+      }
+    }
+
+    final sortedMonthlySummary = Map.fromEntries(
+        monthlySummary.entries.toList()..sort((e1, e2) => e1.key.compareTo(e2.key))
+    );
+
+    return {
+      'categoryExpenses': categoryExpenses,
+      'totalExpense': totalExpense,
+      'monthlySummary': sortedMonthlySummary,
+    };
+  }
+
   @override
   void dispose() {
     _transactionSubscription.cancel();
