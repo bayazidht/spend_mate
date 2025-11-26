@@ -8,23 +8,29 @@ class BaseScaffold extends StatefulWidget {
   const BaseScaffold({super.key});
 
   @override
-  State<BaseScaffold> createState() => _BaseScaffoldState();
+  State<BaseScaffold> createState() => BaseScaffoldState();
 }
 
-class _BaseScaffoldState extends State<BaseScaffold> {
+class BaseScaffoldState extends State<BaseScaffold> {
   int _selectedIndex = 0;
+
+  void setSelectedIndex(int index) {
+    if (mounted) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
 
   static final List<Widget> _widgetOptions = <Widget>[
     const HomeScreen(),
     const TransactionsScreen(),
-    const GraphsScreen(),
+     GraphsScreen(),
     const SettingsScreen(),
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    setSelectedIndex(index);
   }
 
   @override

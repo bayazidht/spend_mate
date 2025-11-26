@@ -69,8 +69,8 @@ class AuthService {
       rethrow;
     }
   }
-  // Sign out
-  static Future<void> signOut() async {
+
+  Future<void> signOut() async {
     try {
       await _googleSignIn.signOut();
       await _auth.signOut();
@@ -79,7 +79,7 @@ class AuthService {
       throw e;
     }
   }
-  // Get current user
+
   static User? getCurrentUser() {
     return _auth.currentUser;
   }

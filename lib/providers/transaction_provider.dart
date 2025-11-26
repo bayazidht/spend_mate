@@ -1,0 +1,58 @@
+import 'package:flutter/material.dart';
+import 'package:spend_mate/models/transaction_model.dart';
+import 'package:spend_mate/services/transaction_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
+
+class TransactionProvider with ChangeNotifier {
+  List<TransactionModel> _transactions = [];
+  double _totalIncome = 0.0;
+  double _totalExpense = 0.0;
+
+  List<TransactionModel> get transactions => _transactions;
+  double get totalIncome => _totalIncome;
+  double get totalExpense => _totalExpense;
+  double get totalBalance => _totalIncome - _totalExpense;
+
+  late StreamSubscription<List<TransactionModel>> _transactionSubscription;
+  TransactionService? _service;
+
+  TransactionProvider(User? user) {
+    if (user != null) {
+      _service = TransactionService();
+      _startListeningToTransactions();
+    }
+  }
+
+  void _startListeningToTransactions() {
+    if (_service != null) {
+      _transactionSubscription = _service!.getTransactions().listen((txList) {
+        _transactions = txList;
+        _calculateSummary();
+        notifyListeners();
+      });
+    }
+  }
+
+  void _calculateSummary() {
+    double income = 0.0;
+    double expense = 0.0;
+
+    for (var tx in _transactions) {
+      if (tx.type == TransactionType.income) {
+        income += tx.amount;
+      } else {
+        expense += tx.amount;
+      }
+    }
+
+    _totalIncome = income;
+    _totalExpense = expense;
+  }
+
+  @override
+  void dispose() {
+    _transactionSubscription.cancel();
+    super.dispose();
+  }
+}
