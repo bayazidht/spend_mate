@@ -22,23 +22,28 @@ class SpendMateApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        // 1. AuthService (Provides User stream)
         Provider<AuthService>(
           create: (_) => AuthService(),
         ),
 
+        // 2. StreamProvider for User (Handles logged-in state)
         StreamProvider<User?>.value(
           value: AuthService().user,
           initialData: null,
           catchError: (_, __) => null,
         ),
 
+        // 3. ChangeNotifierProxyProvider (Depends on the User stream)
+        // এটি নিশ্চিত করে যে User যখন লগ ইন করবে তখনই TransactionProvider তৈরি হবে
         ChangeNotifierProxyProvider<User?, TransactionProvider>(
-          create: (context) => TransactionProvider(null),
+          create: (context) => TransactionProvider(null), // Initial provider with null user
           update: (context, user, previousProvider) {
-
+            // Re-create the provider only when the user status changes
             if (user != null) {
               return TransactionProvider(user);
             }
+            // If user logs out, keep the previous provider or return a null-user version
             return TransactionProvider(null);
           },
           lazy: false,
