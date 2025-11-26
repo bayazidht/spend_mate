@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../models/transaction_model.dart';
+import '../screens/transactions/transaction_detail_screen.dart';
 
 class TransactionItem extends StatelessWidget {
-  final String name;
-  final double amount;
-  final bool isIncome;
-  final String date;
 
-  const TransactionItem({super.key, required this.name, required this.amount, required this.isIncome, required this.date});
+  final TransactionModel tx;
+  const TransactionItem({super.key, required this.tx});
 
   @override
   Widget build(BuildContext context) {
+
+    final String name = tx.category;
+    final double amount = tx.amount;
+    final bool isIncome = tx.type == TransactionType.income;
+    final String date = DateFormat('MMM dd, yyyy').format(tx.date);
+
     return ListTile(
       leading: CircleAvatar(
         backgroundColor: isIncome ? Colors.green.shade100 : Colors.red.shade100,
@@ -27,6 +34,13 @@ class TransactionItem extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => TransactionDetailScreen(transaction: tx),
+          ),
+        );
+      },
     );
   }
 }

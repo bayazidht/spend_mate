@@ -8,7 +8,7 @@ class TransactionModel {
   final TransactionType type;
   final String category;
   final DateTime date;
-  final String? notes;
+  final String notes;
   final String userId;
 
   TransactionModel({
@@ -17,7 +17,7 @@ class TransactionModel {
     required this.type,
     required this.category,
     required this.date,
-    this.notes,
+    required this.notes,
     required this.userId,
   });
 

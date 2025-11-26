@@ -8,7 +8,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
 class AddTransactionScreen extends StatefulWidget {
-  const AddTransactionScreen({super.key});
+  final TransactionModel? transactionToEdit;
+
+  const AddTransactionScreen({super.key, this.transactionToEdit});
 
   @override
   State<AddTransactionScreen> createState() => _AddTransactionScreenState();
@@ -23,10 +25,35 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   DateTime _date = DateTime.now();
   String _notes = '';
 
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _notesController = TextEditingController();
+
+
   @override
   void initState() {
     super.initState();
+
+    if (widget.transactionToEdit != null) {
+      final tx = widget.transactionToEdit!;
+
+      _type = tx.type == TransactionType.income ? app_category.CategoryType.income : app_category.CategoryType.expense;
+      _amount = tx.amount;
+      _selectedCategoryName = tx.category;
+      _date = tx.date;
+      _notes = tx.notes!;
+
+      _amountController.text = tx.amount.toStringAsFixed(2);
+      _notesController.text = tx.notes!;
+    }
   }
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
+
 
   void _setDefaultCategory(CategoryProvider provider) {
     List<app_category.CategoryModel> currentCategories;
@@ -37,10 +64,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       currentCategories = provider.incomeCategories;
     }
 
-    if (currentCategories.isNotEmpty) {
-      _selectedCategoryName = currentCategories.first.name;
-    } else {
-      _selectedCategoryName = null;
+    if (widget.transactionToEdit == null || !currentCategories.any((c) => c.name == _selectedCategoryName)) {
+      if (currentCategories.isNotEmpty) {
+        _selectedCategoryName = currentCategories.first.name;
+      } else {
+        _selectedCategoryName = null;
+      }
     }
   }
 
@@ -63,7 +92,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       _formKey.currentState!.save();
 
       final userId = FirebaseAuth.instance.currentUser?.uid;
-
       if (userId == null || _selectedCategoryName == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please select a category and ensure authentication.')),
@@ -71,8 +99,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         return;
       }
 
-      final newTransaction = TransactionModel(
-        id: '',
+      final String transactionId = widget.transactionToEdit?.id ?? '';
+
+      final transactionToSave = TransactionModel(
+        id: transactionId,
         amount: _amount,
         type: _type == app_category.CategoryType.income ? TransactionType.income : TransactionType.expense,
         category: _selectedCategoryName!,
@@ -81,15 +111,24 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         userId: userId,
       );
 
+      final TransactionService service = TransactionService();
+
       try {
-        await TransactionService().addTransaction(newTransaction);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Transaction added successfully!')),
-        );
+        if (widget.transactionToEdit != null) {
+          await service.updateTransaction(transactionToSave);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Transaction updated successfully!')),
+          );
+        } else {
+          await service.addTransaction(transactionToSave);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Transaction added successfully!')),
+          );
+        }
         Navigator.pop(context);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add transaction: $e')),
+          SnackBar(content: Text('Failed to save transaction: $e')),
         );
       }
     }
@@ -98,6 +137,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   @override
   Widget build(BuildContext context) {
     final categoryProvider = Provider.of<CategoryProvider>(context);
+    final isEditing = widget.transactionToEdit != null;
 
     final List<app_category.CategoryModel> currentCategories =
     _type == app_category.CategoryType.expense
@@ -110,7 +150,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add New Transaction'),
+        title: Text(isEditing ? 'Edit Transaction' : 'Add New Transaction'),
         backgroundColor: const Color(0xFF6A1B9A),
         foregroundColor: Colors.white,
       ),
@@ -128,11 +168,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       label: const Text('Expense', style: TextStyle(fontWeight: FontWeight.bold)),
                       selected: _type == app_category.CategoryType.expense,
                       selectedColor: Colors.red.shade100,
-                      onSelected: (selected) {
+                      onSelected: isEditing ? null : (selected) {
                         if (selected) {
                           setState(() {
                             _type = app_category.CategoryType.expense;
-                            _selectedCategoryName = null; // রিসেট
+                            _selectedCategoryName = null;
                           });
                         }
                       },
@@ -144,11 +184,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       label: const Text('Income', style: TextStyle(fontWeight: FontWeight.bold)),
                       selected: _type == app_category.CategoryType.income,
                       selectedColor: Colors.green.shade100,
-                      onSelected: (selected) {
+                      onSelected: isEditing ? null : (selected) {
                         if (selected) {
                           setState(() {
                             _type = app_category.CategoryType.income;
-                            _selectedCategoryName = null; // রিসেট
+                            _selectedCategoryName = null;
                           });
                         }
                       },
@@ -159,6 +199,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               const SizedBox(height: 20),
 
               TextFormField(
+                controller: _amountController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'Amount (₩)',
@@ -188,8 +229,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   prefixIcon: const Icon(Icons.category),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                 ),
-
-                value: _selectedCategoryName,
+                initialValue: _selectedCategoryName,
                 items: currentCategories.map((app_category.CategoryModel category) {
                   return DropdownMenuItem<String>(
                     value: category.name,
@@ -223,6 +263,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               const SizedBox(height: 10),
 
               TextFormField(
+                controller: _notesController,
                 decoration: InputDecoration(
                   labelText: 'Notes (Optional)',
                   prefixIcon: const Icon(Icons.note),
@@ -235,7 +276,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               ),
               const SizedBox(height: 30),
 
-              // Save Button
               ElevatedButton(
                 onPressed: _submitForm,
                 style: ElevatedButton.styleFrom(
@@ -246,7 +286,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: const Text('Save Transaction', style: TextStyle(fontSize: 18)),
+                child: Text(isEditing ? 'Update Transaction' : 'Save Transaction', style: const TextStyle(fontSize: 18)),
               ),
             ],
           ),

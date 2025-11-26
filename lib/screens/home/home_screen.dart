@@ -106,10 +106,7 @@ class HomeScreen extends StatelessWidget {
                       const Center(child: Text('No transactions found. Start by adding a new one!'))
                     else
                       ...recentTransactions.map((tx) => TransactionItem(
-                        name: tx.category,
-                        amount: tx.amount,
-                        isIncome: tx.type == TransactionType.income,
-                        date: DateFormat('MMM dd, yyyy').format(tx.date),
+                        tx: tx,
                       )).toList(),
                   ],
                 ),

@@ -39,15 +39,7 @@ class TransactionsScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final tx = transactions[index];
               return TransactionItem(
-                name: tx.category,
-                amount: tx.amount,
-                isIncome: tx.type == TransactionType.income,
-                // Use intl package for date formatting
-                date: DateFormat('MMM dd, yyyy').format(tx.date),
-                // Add an option to edit/delete
-                // onTap: () {
-                //   // TODO: Implement navigation to Edit Transaction Screen
-                // },
+                tx: tx,
               );
             },
           );

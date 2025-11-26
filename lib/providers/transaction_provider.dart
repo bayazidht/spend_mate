@@ -50,6 +50,14 @@ class TransactionProvider with ChangeNotifier {
     _totalExpense = expense;
   }
 
+  Future<void> deleteTransaction(String id) async {
+    try {
+      await _service?.deleteTransaction(id);
+    } catch (e) {
+      throw Exception('Failed to delete transaction: $e');
+    }
+  }
+
   Map<String, dynamic> getChartData() {
     Map<String, double> categoryExpenses = {};
     double totalExpense = 0.0;
@@ -62,7 +70,6 @@ class TransactionProvider with ChangeNotifier {
     }
 
     Map<String, Map<String, double>> monthlySummary = {};
-    final now = DateTime.now();
 
     for (var tx in _transactions) {
       final monthKey = '${tx.date.year}-${tx.date.month.toString().padLeft(2, '0')}';
