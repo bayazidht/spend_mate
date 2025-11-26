@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:spend_mate/models/transaction_model.dart';
+import 'package:spend_mate/models/category_model.dart' as app_category;
 import 'package:spend_mate/services/transaction_service.dart';
+import 'package:spend_mate/providers/category_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
@@ -13,19 +16,32 @@ class AddTransactionScreen extends StatefulWidget {
 
 class _AddTransactionScreenState extends State<AddTransactionScreen> {
   final _formKey = GlobalKey<FormState>();
-  TransactionType _type = TransactionType.expense;
+
+  app_category.CategoryType _type = app_category.CategoryType.expense;
   double _amount = 0.0;
-  String _category = 'Food';
+  String? _selectedCategoryName;
   DateTime _date = DateTime.now();
   String _notes = '';
-
-  final List<String> expenseCategories = ['Food', 'Transport', 'Shopping', 'Bills'];
-  final List<String> incomeCategories = ['Salary', 'Gift', 'Investment'];
 
   @override
   void initState() {
     super.initState();
-    _category = _type == TransactionType.expense ? expenseCategories.first : incomeCategories.first;
+  }
+
+  void _setDefaultCategory(CategoryProvider provider) {
+    List<app_category.CategoryModel> currentCategories;
+
+    if (_type == app_category.CategoryType.expense) {
+      currentCategories = provider.expenseCategories;
+    } else {
+      currentCategories = provider.incomeCategories;
+    }
+
+    if (currentCategories.isNotEmpty) {
+      _selectedCategoryName = currentCategories.first.name;
+    } else {
+      _selectedCategoryName = null;
+    }
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -47,10 +63,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       _formKey.currentState!.save();
 
       final userId = FirebaseAuth.instance.currentUser?.uid;
-      if (userId == null) {
-        // Handle case where user is not logged in
+
+      if (userId == null || _selectedCategoryName == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('User not authenticated!')),
+          const SnackBar(content: Text('Please select a category and ensure authentication.')),
         );
         return;
       }
@@ -58,8 +74,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       final newTransaction = TransactionModel(
         id: '',
         amount: _amount,
-        type: _type,
-        category: _category,
+        type: _type == app_category.CategoryType.income ? TransactionType.income : TransactionType.expense,
+        category: _selectedCategoryName!,
         date: _date,
         notes: _notes,
         userId: userId,
@@ -81,7 +97,16 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentCategories = _type == TransactionType.expense ? expenseCategories : incomeCategories;
+    final categoryProvider = Provider.of<CategoryProvider>(context);
+
+    final List<app_category.CategoryModel> currentCategories =
+    _type == app_category.CategoryType.expense
+        ? categoryProvider.expenseCategories
+        : categoryProvider.incomeCategories;
+
+    if (_selectedCategoryName == null || !currentCategories.any((c) => c.name == _selectedCategoryName)) {
+      _setDefaultCategory(categoryProvider);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -96,19 +121,18 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              // Type Selector (Income/Expense Tabs)
               Row(
                 children: [
                   Expanded(
                     child: ChoiceChip(
                       label: const Text('Expense', style: TextStyle(fontWeight: FontWeight.bold)),
-                      selected: _type == TransactionType.expense,
+                      selected: _type == app_category.CategoryType.expense,
                       selectedColor: Colors.red.shade100,
                       onSelected: (selected) {
                         if (selected) {
                           setState(() {
-                            _type = TransactionType.expense;
-                            _category = expenseCategories.first; // Reset category
+                            _type = app_category.CategoryType.expense;
+                            _selectedCategoryName = null; // রিসেট
                           });
                         }
                       },
@@ -118,13 +142,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   Expanded(
                     child: ChoiceChip(
                       label: const Text('Income', style: TextStyle(fontWeight: FontWeight.bold)),
-                      selected: _type == TransactionType.income,
+                      selected: _type == app_category.CategoryType.income,
                       selectedColor: Colors.green.shade100,
                       onSelected: (selected) {
                         if (selected) {
                           setState(() {
-                            _type = TransactionType.income;
-                            _category = incomeCategories.first; // Reset category
+                            _type = app_category.CategoryType.income;
+                            _selectedCategoryName = null; // রিসেট
                           });
                         }
                       },
@@ -134,7 +158,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               ),
               const SizedBox(height: 20),
 
-              // Amount Field
               TextFormField(
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
@@ -157,29 +180,39 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               ),
               const SizedBox(height: 20),
 
-              // Category Dropdown
-              DropdownButtonFormField<String>(
+              currentCategories.isEmpty
+                  ? const Center(child: Text('No categories available. Please add one in Settings.'))
+                  : DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   labelText: 'Category',
                   prefixIcon: const Icon(Icons.category),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                 ),
-                value: _category,
-                items: currentCategories.map((String value) {
+
+                value: _selectedCategoryName,
+                items: currentCategories.map((app_category.CategoryModel category) {
                   return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
+                    value: category.name,
+                    child: Text(category.name),
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
                   setState(() {
-                    _category = newValue!;
+                    _selectedCategoryName = newValue;
                   });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select a category';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _selectedCategoryName = value;
                 },
               ),
               const SizedBox(height: 20),
 
-              // Date Picker
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.calendar_today, color: Colors.grey),
@@ -189,7 +222,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               ),
               const SizedBox(height: 10),
 
-              // Notes Field
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Notes (Optional)',
