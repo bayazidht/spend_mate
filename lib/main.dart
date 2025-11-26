@@ -1,50 +1,44 @@
+// lib/main.dart
+
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'package:spend_mate/services/auth_service.dart';
+import 'package:spend_mate/screens/wrapper.dart'; // Handles auth state
+// (Assuming you have firebase_options.dart from FlutterFire CLI)
+import 'firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const SpendMateApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class SpendMateApp extends StatelessWidget {
+  const SpendMateApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Spend Mate',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: const MyHomePage(title: 'Spend Mate'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: .center,
-          children: [const Text('Dashboard')],
+    // Provide the AuthService throughout the widget tree
+    return MultiProvider(
+      providers: [
+        Provider<AuthService>(
+          create: (_) => AuthService(),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'Add',
-        child: const Icon(Icons.add),
+        // Add other providers like TransactionProvider, CategoryProvider here
+      ],
+      child: MaterialApp(
+        title: 'Spend Mate',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.indigo,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          // Define a theme with purple/blue accents like in the screenshots
+          brightness: Brightness.light,
+        ),
+        home: const Wrapper(), // Check auth state and show relevant screen
       ),
     );
   }

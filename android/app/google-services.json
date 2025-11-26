@@ -12,7 +12,20 @@
           "package_name": "com.bayazidht.spend_mate"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "106546969378-3octsdnrind65imd68sbth6nrnahqo0j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bayazidht.spend_mate",
+            "certificate_hash": "5db32ae5de3fb47b63370c28217a3adaf64691d0"
+          }
+        },
+        {
+          "client_id": "106546969378-9cl91grec47pt9ttnp7knnmfev621tfm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBEOF9UlHM3KjqJ7gG9QxdkJZeOnK2P0WU"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106546969378-9cl91grec47pt9ttnp7knnmfev621tfm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "106546969378-dk25duufe02bh8snd712mnf0conq6ted.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bayazidht.spendMate"
+              }
+            }
+          ]
         }
       }
     }
