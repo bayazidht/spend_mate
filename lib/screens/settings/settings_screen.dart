@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:spend_mate/services/auth_service.dart';
 import 'package:spend_mate/screens/settings/manage_categories_screen.dart';
 
-import '../../providers/settings_provider.dart'; // Future implementation
+import '../../providers/settings_provider.dart';
+import '../../providers/theme_provider.dart'; // Future implementation
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -13,6 +14,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
+    final themeProvider = Provider.of<ThemeProvider>(context);
 
     final settingsProvider = Provider.of<SettingsProvider>(context);
     final availableCurrencies = ['€', '\$', '₩', '£', '₹'];
@@ -105,12 +107,14 @@ class SettingsScreen extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.color_lens),
-            title: const Text('Dark Mode'),
-            trailing: Switch(
-              value: false,
-              onChanged: (val) {},
-            ), // Placeholder switch
+              leading: const Icon(Icons.dark_mode),
+              title: const Text('Dark Mode'),
+              trailing: Switch(
+                value: themeProvider.isDarkMode,
+                onChanged: (newValue) {
+                  themeProvider.toggleTheme(newValue);
+                },
+              ),
           ),
         ],
       ),

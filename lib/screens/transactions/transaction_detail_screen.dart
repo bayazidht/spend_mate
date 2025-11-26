@@ -46,7 +46,7 @@ class TransactionDetailScreen extends StatelessWidget {
       }
     }
 
-    void _editTransaction() {
+    void editTransaction() {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => AddTransactionScreen(
@@ -66,7 +66,7 @@ class TransactionDetailScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: _editTransaction,
+            onPressed: editTransaction,
           ),
           IconButton(
             icon: const Icon(Icons.delete),
