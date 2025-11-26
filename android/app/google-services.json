@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "106546969378",
+    "project_id": "spend-mate",
+    "storage_bucket": "spend-mate.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106546969378:android:1175d4989b1f79632d437b",
+        "android_client_info": {
+          "package_name": "com.bayazidht.spend_mate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEOF9UlHM3KjqJ7gG9QxdkJZeOnK2P0WU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
