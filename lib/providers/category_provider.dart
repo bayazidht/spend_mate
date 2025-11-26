@@ -4,8 +4,11 @@ import 'package:spend_mate/services/category_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 
+import '../services/transaction_service.dart';
+
 class CategoryProvider with ChangeNotifier {
   List<CategoryModel> _categories = [];
+  TransactionService? _transactionService;
   CategoryService? _service;
   late StreamSubscription<List<CategoryModel>> _categorySubscription;
 
@@ -16,6 +19,7 @@ class CategoryProvider with ChangeNotifier {
   CategoryProvider(User? user) {
     if (user != null) {
       _service = CategoryService();
+      _transactionService = TransactionService();
       _startListeningToCategories();
     }
   }
@@ -43,8 +47,18 @@ class CategoryProvider with ChangeNotifier {
   }
 
   Future<void> deleteCategory(String id) async {
-    if (_service != null) {
+    if (_service != null && _transactionService != null) {
+      // 1. Find the category model to get its name
+      final categoryToDelete = _categories.firstWhere((c) => c.id == id, orElse: () => throw Exception("Category not found"));
+      final categoryName = categoryToDelete.name;
+
+      // 2. Delete all related transactions first
+      await _transactionService!.deleteTransactionsByCategory(categoryName);
+
+      // 3. Then, delete the category itself
       await _service!.deleteCategory(id);
+
+      // Note: notifyListeners() automatically happens when the Firestore stream updates _categories
     }
   }
 

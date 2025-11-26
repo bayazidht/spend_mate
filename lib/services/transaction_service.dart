@@ -42,4 +42,21 @@ class TransactionService {
   Future<void> deleteTransaction(String transactionId) async {
     await _transactionsRef.doc(transactionId).delete();
   }
+
+  Future<void> deleteTransactionsByCategory(String categoryName) async {
+    final snapshot = await _transactionsRef
+        .where('category', isEqualTo: categoryName)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      final batch = _firestore.batch();
+
+      for (final doc in snapshot.docs) {
+        batch.delete(doc.reference);
+      }
+
+      await batch.commit();
+      print("Successfully deleted ${snapshot.docs.length} transactions for category: $categoryName");
+    }
+  }
 }
