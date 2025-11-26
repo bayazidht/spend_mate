@@ -25,12 +25,20 @@ class CategoryProvider with ChangeNotifier {
   }
 
   void _startListeningToCategories() {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
     if (_service != null) {
       _categorySubscription = _service!.getCategories().listen((catList) {
         _categories = catList;
+        if (_categories.isEmpty && userId != null) {
+          _checkAndSetDefaultCategories(userId);
+        }
         notifyListeners();
       });
     }
+  }
+
+  Future<void> _checkAndSetDefaultCategories(String userId) async {
+    await _service?.saveDefaultCategories(userId);
   }
 
   Future<void> addCategory(String name, CategoryType type) async {

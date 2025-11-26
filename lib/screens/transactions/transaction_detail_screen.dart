@@ -146,11 +146,11 @@ class TransactionDetailScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 20, color: Colors.grey.shade600),
+              Icon(icon, size: 20),
               const SizedBox(width: 8),
               Text(
                 label,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -159,7 +159,7 @@ class TransactionDetailScreen extends StatelessWidget {
             padding: const EdgeInsets.only(left: 28.0),
             child: Text(
               value,
-              style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
+              style: TextStyle(fontSize: 16),
               maxLines: isMultiline ? null : 1,
               overflow: isMultiline ? null : TextOverflow.ellipsis,
             ),
