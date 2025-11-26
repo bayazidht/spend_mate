@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:spend_mate/providers/category_provider.dart';
+import 'package:spend_mate/providers/settings_provider.dart';
 import 'package:spend_mate/services/auth_service.dart';
 import 'package:spend_mate/providers/transaction_provider.dart'; // নতুন import
 import 'package:spend_mate/screens/wrapper.dart';
@@ -32,6 +33,8 @@ class SpendMateApp extends StatelessWidget {
           initialData: null,
           catchError: (_, __) => null,
         ),
+
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
 
         ChangeNotifierProxyProvider<User?, TransactionProvider>(
           create: (context) => TransactionProvider(null),

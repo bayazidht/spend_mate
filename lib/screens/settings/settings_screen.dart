@@ -3,7 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spend_mate/services/auth_service.dart';
-import 'package:spend_mate/screens/settings/manage_categories_screen.dart'; // Future implementation
+import 'package:spend_mate/screens/settings/manage_categories_screen.dart';
+
+import '../../providers/settings_provider.dart'; // Future implementation
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -11,6 +13,9 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
+
+    final settingsProvider = Provider.of<SettingsProvider>(context);
+    final availableCurrencies = ['₩', '\$', '€', '£', '₹'];
 
     return Scaffold(
       appBar: AppBar(
@@ -23,7 +28,10 @@ class SettingsScreen extends StatelessWidget {
           // Profile/User Info (Optional)
           const Padding(
             padding: EdgeInsets.all(16.0),
-            child: Text('Account', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            child: Text(
+              'Account',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
           ),
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
@@ -37,7 +45,10 @@ class SettingsScreen extends StatelessWidget {
           // General Settings
           const Padding(
             padding: EdgeInsets.all(16.0),
-            child: Text('General', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            child: Text(
+              'General',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
           ),
           ListTile(
             leading: const Icon(Icons.category),
@@ -45,22 +56,61 @@ class SettingsScreen extends StatelessWidget {
             trailing: const Icon(Icons.arrow_forward_ios),
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const ManageCategoriesScreen()),
+                MaterialPageRoute(
+                  builder: (context) => const ManageCategoriesScreen(),
+                ),
               );
             },
           ),
           ListTile(
             leading: const Icon(Icons.currency_exchange),
             title: const Text('Currency'),
-            trailing: const Text('₩'), // Current currency symbol
+            trailing: DropdownButton<String>(
+              value: settingsProvider.selectedCurrency,
+              items: availableCurrencies.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  settingsProvider.setCurrency(newValue);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Currency set to $newValue')),
+                  );
+                }
+              },
+            ), // Current currency symbol
             onTap: () {
-              // TODO: Implement currency selection
+              DropdownButton<String>(
+                value: settingsProvider.selectedCurrency,
+                items: availableCurrencies.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    settingsProvider.setCurrency(
+                      newValue,
+                    ); // ✅ সেটিং সেভ করা হলো
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Currency set to $newValue')),
+                    );
+                  }
+                },
+              );
             },
           ),
           ListTile(
             leading: const Icon(Icons.color_lens),
             title: const Text('Dark Mode'),
-            trailing: Switch(value: false, onChanged: (val) {}), // Placeholder switch
+            trailing: Switch(
+              value: false,
+              onChanged: (val) {},
+            ), // Placeholder switch
           ),
         ],
       ),
