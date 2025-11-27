@@ -10,7 +10,8 @@ class ManageCategoriesScreen extends StatefulWidget {
   State<ManageCategoriesScreen> createState() => _ManageCategoriesScreenState();
 }
 
-class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> with SingleTickerProviderStateMixin {
+class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -83,10 +84,16 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> with Si
       body: TabBarView(
         controller: _tabController,
         children: [
-          // Expense Categories Tab
-          _buildCategoryList(provider.expenseCategories, CategoryType.expense, provider),
-          // Income Categories Tab
-          _buildCategoryList(provider.incomeCategories, CategoryType.income, provider),
+          _buildCategoryList(
+            provider.expenseCategories,
+            CategoryType.expense,
+            provider,
+          ),
+          _buildCategoryList(
+            provider.incomeCategories,
+            CategoryType.income,
+            provider,
+          ),
         ],
       ),
 
@@ -105,7 +112,11 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> with Si
     );
   }
 
-  Widget _buildCategoryList(List<CategoryModel> categories, CategoryType type, CategoryProvider provider) {
+  Widget _buildCategoryList(
+    List<CategoryModel> categories,
+    CategoryType type,
+    CategoryProvider provider,
+  ) {
     if (categories.isEmpty) {
       return Center(
         child: Padding(
@@ -120,13 +131,24 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> with Si
     }
 
     return ListView.builder(
+      padding: const EdgeInsets.all(14.0),
       itemCount: categories.length,
       itemBuilder: (context, index) {
         final category = categories[index];
         return ListTile(
-          leading: Icon(
-            type == CategoryType.expense ? Icons.remove_circle : Icons.add_circle,
-            color: type == CategoryType.expense ? Colors.red : Colors.green,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 3.0,
+            vertical: 3.0,
+          ),
+          leading: CircleAvatar(
+            backgroundColor: type == CategoryType.income
+                ? Colors.green.shade100 : Colors.red.shade100,
+            child: Icon(
+              type == CategoryType.expense
+                  ? Icons.arrow_upward
+                  : Icons.arrow_downward,
+              color: type == CategoryType.expense ? Colors.red : Colors.green,
+            ),
           ),
           title: Text(category.name),
           trailing: IconButton(
@@ -136,10 +158,21 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> with Si
                 context: context,
                 builder: (ctx) => AlertDialog(
                   title: const Text('Confirm Deletion'),
-                  content: Text('Are you sure you want to delete the category "${category.name}"?'),
+                  content: Text(
+                    'Are you sure you want to delete the category "${category.name}"?',
+                  ),
                   actions: [
-                    TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Cancel')),
-                    TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Delete', style: TextStyle(color: Colors.red))),
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(false),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(true),
+                      child: const Text(
+                        'Delete',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
                   ],
                 ),
               );
