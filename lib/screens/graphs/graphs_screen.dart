@@ -13,6 +13,7 @@ class GraphsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<TransactionProvider>(context);
     final chartData = provider.getChartData();
+    final currency = Provider.of<SettingsProvider>(context).selectedCurrency;
 
     final categoryExpenses = chartData['categoryExpenses'] as Map<String, double>;
     final totalExpense = chartData['totalExpense'] as double;
@@ -33,7 +34,6 @@ class GraphsScreen extends StatelessWidget {
               'Expense Breakdown by Category',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
 
             _buildPieChart(categoryExpenses, totalExpense),
 
@@ -43,9 +43,9 @@ class GraphsScreen extends StatelessWidget {
               'Monthly Income vs Expense',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 30),
 
-            _buildBarChart(monthlySummary),
+            _buildBarChart(monthlySummary, currency),
           ],
         ),
       ),
@@ -86,7 +86,7 @@ class GraphsScreen extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: 200,
+          height: 270,
           child: PieChart(
             PieChartData(
               sections: pieSections,
@@ -114,7 +114,7 @@ class GraphsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBarChart(Map<String, Map<String, double>> monthlySummary) {
+  Widget _buildBarChart(Map<String, Map<String, double>> monthlySummary, String currency) {
     if (monthlySummary.isEmpty) {
       return const SizedBox(
         height: 200,
@@ -182,9 +182,9 @@ class GraphsScreen extends StatelessWidget {
                 sideTitles: SideTitles(
                     showTitles: true,
                     getTitlesWidget: (value, meta) {
-                      return Text('₩${value.toInt()}', style: const TextStyle(fontSize: 10));
+                      return Text('$currency${value.toInt()}', style: const TextStyle(fontSize: 10));
                     },
-                    reservedSize: 30
+                    reservedSize: 50
                 )
             ),
             topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),

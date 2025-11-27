@@ -14,7 +14,7 @@ class TransactionProvider with ChangeNotifier {
   double get totalExpense => _totalExpense;
   double get totalBalance => _totalIncome - _totalExpense;
 
-  late StreamSubscription<List<TransactionModel>> _transactionSubscription;
+  StreamSubscription<List<TransactionModel>>? _transactionSubscription;
   TransactionService? _service;
 
   TransactionProvider(User? user) {
@@ -96,7 +96,9 @@ class TransactionProvider with ChangeNotifier {
 
   @override
   void dispose() {
-    _transactionSubscription.cancel();
+    if (_transactionSubscription != null) {
+      _transactionSubscription?.cancel();
+    }
     super.dispose();
   }
 }

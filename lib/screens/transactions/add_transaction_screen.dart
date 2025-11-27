@@ -30,7 +30,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
 
-
   @override
   void initState() {
     super.initState();
@@ -38,7 +37,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     if (widget.transactionToEdit != null) {
       final tx = widget.transactionToEdit!;
 
-      _type = tx.type == TransactionType.income ? app_category.CategoryType.income : app_category.CategoryType.expense;
+      _type = tx.type == TransactionType.income
+          ? app_category.CategoryType.income
+          : app_category.CategoryType.expense;
       _amount = tx.amount;
       _selectedCategoryName = tx.category;
       _date = tx.date;
@@ -56,7 +57,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     super.dispose();
   }
 
-
   void _setDefaultCategory(CategoryProvider provider) {
     List<app_category.CategoryModel> currentCategories;
 
@@ -66,7 +66,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       currentCategories = provider.incomeCategories;
     }
 
-    if (widget.transactionToEdit == null || !currentCategories.any((c) => c.name == _selectedCategoryName)) {
+    if (widget.transactionToEdit == null ||
+        !currentCategories.any((c) => c.name == _selectedCategoryName)) {
       if (currentCategories.isNotEmpty) {
         _selectedCategoryName = currentCategories.first.name;
       } else {
@@ -96,7 +97,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       final userId = FirebaseAuth.instance.currentUser?.uid;
       if (userId == null || _selectedCategoryName == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select a category and ensure authentication.')),
+          const SnackBar(
+            content: Text(
+              'Please select a category and ensure authentication.',
+            ),
+          ),
         );
         return;
       }
@@ -106,7 +111,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       final transactionToSave = TransactionModel(
         id: transactionId,
         amount: _amount,
-        type: _type == app_category.CategoryType.income ? TransactionType.income : TransactionType.expense,
+        type: _type == app_category.CategoryType.income
+            ? TransactionType.income
+            : TransactionType.expense,
         category: _selectedCategoryName!,
         date: _date,
         notes: _notes,
@@ -141,13 +148,15 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     final categoryProvider = Provider.of<CategoryProvider>(context);
     final currency = Provider.of<SettingsProvider>(context).selectedCurrency;
     final isEditing = widget.transactionToEdit != null;
+    final colorScheme = Theme.of(context).colorScheme;
 
     final List<app_category.CategoryModel> currentCategories =
-    _type == app_category.CategoryType.expense
+        _type == app_category.CategoryType.expense
         ? categoryProvider.expenseCategories
         : categoryProvider.incomeCategories;
 
-    if (_selectedCategoryName == null || !currentCategories.any((c) => c.name == _selectedCategoryName)) {
+    if (_selectedCategoryName == null ||
+        !currentCategories.any((c) => c.name == _selectedCategoryName)) {
       _setDefaultCategory(categoryProvider);
     }
 
@@ -164,38 +173,32 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Row(
-                children: [
-                  Expanded(
-                    child: ChoiceChip(
-                      label: const Text('Expense', style: TextStyle(fontWeight: FontWeight.bold)),
-                      selected: _type == app_category.CategoryType.expense,
-                      selectedColor: Colors.red.shade100,
-                      onSelected: isEditing ? null : (selected) {
-                        if (selected) {
-                          setState(() {
-                            _type = app_category.CategoryType.expense;
-                            _selectedCategoryName = null;
-                          });
-                        }
-                      },
-                    ),
+              SegmentedButton<app_category.CategoryType>(
+                selected: {_type},
+                onSelectionChanged: isEditing
+                    ? null
+                    : (Set<app_category.CategoryType> newSelection) {
+                  setState(() {
+                    _type = newSelection.first;
+                    _selectedCategoryName = null;
+                  });
+                },
+                style: SegmentedButton.styleFrom(
+                  foregroundColor: colorScheme.onPrimaryContainer,
+                  selectedBackgroundColor: colorScheme.primaryContainer,
+                  selectedForegroundColor: colorScheme.onPrimaryContainer,
+                  minimumSize: const Size(0, 50),
+                ),
+                segments: const [
+                  ButtonSegment<app_category.CategoryType>(
+                    value: app_category.CategoryType.expense,
+                    label: Text('Expense'),
+                    icon: Icon(Icons.arrow_downward),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ChoiceChip(
-                      label: const Text('Income', style: TextStyle(fontWeight: FontWeight.bold)),
-                      selected: _type == app_category.CategoryType.income,
-                      selectedColor: Colors.green.shade100,
-                      onSelected: isEditing ? null : (selected) {
-                        if (selected) {
-                          setState(() {
-                            _type = app_category.CategoryType.income;
-                            _selectedCategoryName = null;
-                          });
-                        }
-                      },
-                    ),
+                  ButtonSegment<app_category.CategoryType>(
+                    value: app_category.CategoryType.income,
+                    label: Text('Income'),
+                    icon: Icon(Icons.arrow_upward),
                   ),
                 ],
               ),
@@ -204,16 +207,23 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               TextFormField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w400,
+                ),
                 decoration: InputDecoration(
                   labelText: 'Amount ($currency)',
                   prefixIcon: const Icon(Icons.money),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter an amount';
                   }
-                  if (double.tryParse(value) == null || double.parse(value) <= 0) {
+                  if (double.tryParse(value) == null ||
+                      double.parse(value) <= 0) {
                     return 'Please enter a valid positive number';
                   }
                   return null;
@@ -225,54 +235,73 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               const SizedBox(height: 20),
 
               currentCategories.isEmpty
-                  ? const Center(child: Text('No categories available. Please add one in Settings.'))
+                  ? const Center(
+                      child: Text(
+                        'No categories available. Please add one in Settings.',
+                      ),
+                    )
                   : DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  labelText: 'Category',
-                  prefixIcon: const Icon(Icons.category),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-                initialValue: _selectedCategoryName,
-                items: currentCategories.map((app_category.CategoryModel category) {
-                  return DropdownMenuItem<String>(
-                    value: category.name,
-                    child: Text(category.name),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedCategoryName = newValue;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select a category';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _selectedCategoryName = value;
-                },
-              ),
+                      decoration: InputDecoration(
+                        labelText: 'Category',
+                        prefixIcon: const Icon(Icons.category),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      initialValue: _selectedCategoryName,
+                      items: currentCategories.map((
+                        app_category.CategoryModel category,
+                      ) {
+                        return DropdownMenuItem<String>(
+                          value: category.name,
+                          child: Text(category.name),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedCategoryName = newValue;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please select a category';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _selectedCategoryName = value;
+                      },
+                    ),
               const SizedBox(height: 20),
 
               ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.calendar_today, color: Colors.grey),
-                title: Text('Date: ${DateFormat('EEE, MMM d, yyyy').format(_date)}'),
+                contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: BorderSide(
+                    color: Theme.of(context).colorScheme.outline,
+                    width: 1.0,
+                  ),
+                ),
+                leading: const Icon(Icons.calendar_today),
+                title: Text(
+                  'Date: ${DateFormat('EEE, MMM d, yyyy').format(_date)}',
+                ),
                 trailing: const Icon(Icons.edit),
                 onTap: () => _selectDate(context),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
               TextFormField(
                 controller: _notesController,
                 decoration: InputDecoration(
                   labelText: 'Notes (Optional)',
                   prefixIcon: const Icon(Icons.note),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
-                maxLines: 2,
+                maxLines: 1,
                 onSaved: (value) {
                   _notes = value ?? '';
                 },
@@ -289,7 +318,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: Text(isEditing ? 'Update Transaction' : 'Save Transaction', style: const TextStyle(fontSize: 18)),
+                child: Text(
+                  isEditing ? 'Update Transaction' : 'Save Transaction',
+                  style: const TextStyle(fontSize: 18),
+                ),
               ),
             ],
           ),

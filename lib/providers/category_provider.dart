@@ -10,7 +10,7 @@ class CategoryProvider with ChangeNotifier {
   List<CategoryModel> _categories = [];
   TransactionService? _transactionService;
   CategoryService? _service;
-  late StreamSubscription<List<CategoryModel>> _categorySubscription;
+  StreamSubscription<List<CategoryModel>>? _categorySubscription;
 
   List<CategoryModel> get categories => _categories;
   List<CategoryModel> get incomeCategories => _categories.where((c) => c.type == CategoryType.income).toList();
@@ -66,7 +66,9 @@ class CategoryProvider with ChangeNotifier {
 
   @override
   void dispose() {
-    _categorySubscription.cancel();
+    if (_categorySubscription != null) {
+      _categorySubscription?.cancel();
+    }
     super.dispose();
   }
 }
