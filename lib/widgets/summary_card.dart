@@ -13,33 +13,49 @@ class SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currency = Provider.of<SettingsProvider>(context).selectedCurrency;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
-      elevation: 0.5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+        side: BorderSide(color: colorScheme.outline.withAlpha(153), width: 1.0),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(18.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
+            Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: colorScheme.onSurface)),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Income', style: TextStyle(color: Colors.green)),
-                    Text('$currency${income.toStringAsFixed(0)}', style: const TextStyle(fontSize: 16, color: Colors.green)),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Income', style: TextStyle(color: colorScheme.primary, fontWeight: FontWeight.w400, fontSize: 15)),
+                      const SizedBox(height: 4),
+                      Text(
+                        '+ $currency${income.toStringAsFixed(0)}',
+                        style: TextStyle(fontSize: 22, color: colorScheme.primary, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const Text('Expense', style: TextStyle(color: Colors.red)),
-                    Text('$currency${expense.toStringAsFixed(0)}', style: const TextStyle(fontSize: 16, color: Colors.red)),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text('Expense', style: TextStyle(color: colorScheme.error, fontWeight: FontWeight.w400, fontSize: 15)),
+                      const SizedBox(height: 4),
+                      Text(
+                        '- $currency${expense.toStringAsFixed(0)}',
+                        style: TextStyle(fontSize: 22, color: colorScheme.error, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

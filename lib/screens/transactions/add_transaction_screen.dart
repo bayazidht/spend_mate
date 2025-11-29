@@ -82,6 +82,19 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       initialDate: _date,
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: Theme.of(context).colorScheme.primary,
+              onPrimary: Theme.of(context).colorScheme.onPrimary,
+              surface: Theme.of(context).colorScheme.surface,
+              onSurface: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null && picked != _date) {
       setState(() {
@@ -151,7 +164,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     final colorScheme = Theme.of(context).colorScheme;
 
     final List<app_category.CategoryModel> currentCategories =
-        _type == app_category.CategoryType.expense
+    _type == app_category.CategoryType.expense
         ? categoryProvider.expenseCategories
         : categoryProvider.incomeCategories;
 
@@ -160,11 +173,28 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       _setDefaultCategory(categoryProvider);
     }
 
+    final inputDecoration = InputDecoration(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: colorScheme.outline, width: 1.0),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: colorScheme.outline.withAlpha(178), width: 1.0),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: colorScheme.primary, width: 2.0),
+      ),
+      labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    );
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? 'Edit Transaction' : 'Add New Transaction'),
-        backgroundColor: const Color(0xFF6A1B9A),
-        foregroundColor: Colors.white,
+        title: Text(isEditing ? 'Edit Transaction' : 'Add Transaction'),
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -184,7 +214,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   });
                 },
                 style: SegmentedButton.styleFrom(
-                  foregroundColor: colorScheme.onPrimaryContainer,
+                  foregroundColor: colorScheme.onSurface,
                   selectedBackgroundColor: colorScheme.primaryContainer,
                   selectedForegroundColor: colorScheme.onPrimaryContainer,
                   minimumSize: const Size(0, 50),
@@ -207,16 +237,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               TextFormField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 22,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w600,
+                  color: colorScheme.onSurface,
                 ),
-                decoration: InputDecoration(
+                decoration: inputDecoration.copyWith(
                   labelText: 'Amount ($currency)',
-                  prefixIcon: const Icon(Icons.money),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  prefixIcon: Icon(Icons.money, color: colorScheme.onSurfaceVariant),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -235,73 +263,71 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               const SizedBox(height: 20),
 
               currentCategories.isEmpty
-                  ? const Center(
-                      child: Text(
-                        'No categories available. Please add one in Settings.',
-                      ),
-                    )
+                  ? Center(
+                child: Text(
+                  'No categories available. Please add one in Settings.',
+                  style: TextStyle(color: colorScheme.error),
+                ),
+              )
                   : DropdownButtonFormField<String>(
-                      decoration: InputDecoration(
-                        labelText: 'Category',
-                        prefixIcon: const Icon(Icons.category),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      initialValue: _selectedCategoryName,
-                      items: currentCategories.map((
-                        app_category.CategoryModel category,
-                      ) {
-                        return DropdownMenuItem<String>(
-                          value: category.name,
-                          child: Text(category.name),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedCategoryName = newValue;
-                        });
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please select a category';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _selectedCategoryName = value;
-                      },
-                    ),
+                decoration: inputDecoration.copyWith(
+                  labelText: 'Category',
+                  prefixIcon: Icon(Icons.category, color: colorScheme.onSurfaceVariant),
+                ),
+                value: _selectedCategoryName,
+                items: currentCategories.map((
+                    app_category.CategoryModel category,
+                    ) {
+                  return DropdownMenuItem<String>(
+                    value: category.name,
+                    child: Text(category.name, style: TextStyle(color: colorScheme.onSurface)),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedCategoryName = newValue;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select a category';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _selectedCategoryName = value;
+                },
+              ),
               const SizedBox(height: 20),
 
               ListTile(
-                contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                   side: BorderSide(
-                    color: Theme.of(context).colorScheme.outline,
+                    color: colorScheme.outline,
                     width: 1.0,
                   ),
                 ),
-                leading: const Icon(Icons.calendar_today),
+                tileColor: colorScheme.surfaceContainer,
+                leading: Icon(Icons.calendar_today, color: colorScheme.onSurfaceVariant),
                 title: Text(
                   'Date: ${DateFormat('EEE, MMM d, yyyy').format(_date)}',
+                  style: TextStyle(fontSize: 16, color: colorScheme.onSurface),
                 ),
-                trailing: const Icon(Icons.edit),
+                trailing: Icon(Icons.edit, color: colorScheme.secondary),
                 onTap: () => _selectDate(context),
               ),
               const SizedBox(height: 20),
 
               TextFormField(
                 controller: _notesController,
-                decoration: InputDecoration(
+                decoration: inputDecoration.copyWith(
                   labelText: 'Notes (Optional)',
-                  prefixIcon: const Icon(Icons.note),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  prefixIcon: Icon(Icons.note, color: colorScheme.onSurfaceVariant),
                 ),
-                maxLines: 1,
+                maxLines: 3,
+                minLines: 1,
                 onSaved: (value) {
                   _notes = value ?? '';
                 },
@@ -311,16 +337,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               ElevatedButton(
                 onPressed: _submitForm,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  foregroundColor: Colors.white,
+                  backgroundColor: colorScheme.primary,
+                  foregroundColor: colorScheme.onPrimary,
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
                   ),
+                  minimumSize: const Size(double.infinity, 50),
                 ),
                 child: Text(
                   isEditing ? 'Update Transaction' : 'Save Transaction',
-                  style: const TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
             ],

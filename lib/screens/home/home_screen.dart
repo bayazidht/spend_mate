@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:spend_mate/providers/transaction_provider.dart';
 import 'package:spend_mate/models/transaction_model.dart';
@@ -15,12 +16,13 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<TransactionProvider>(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
     final totalBalance = provider.totalBalance;
     final totalIncome = provider.totalIncome;
     final totalExpense = provider.totalExpense;
 
-    final recentTransactions = provider.transactions.take(3).toList();
+    final recentTransactions = provider.transactions.reversed.take(3).toList();
 
     Map<String, double> getFilteredSummary(List<TransactionModel> transactions, {bool today = false}) {
       double income = 0.0;
@@ -47,17 +49,20 @@ class HomeScreen extends StatelessWidget {
           }
         }
       }
-
       return {'income': income, 'expense': expense};
     }
 
     final todaySummary = getFilteredSummary(provider.transactions, today: true);
     final monthSummary = getFilteredSummary(provider.transactions, today: false);
 
-
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: colorScheme.primary,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.light,
+      ),
+      child: Scaffold(
+        body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -77,35 +82,59 @@ class HomeScreen extends StatelessWidget {
                       income: todaySummary['income']!,
                       expense: todaySummary['expense']!,
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 8),
 
                     SummaryCard(
                       title: "This Month",
                       income: monthSummary['income']!,
                       expense: monthSummary['expense']!,
                     ),
-                    const SizedBox(height: 16),
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Recent Transactions', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        GestureDetector(
-                          onTap: () {
-                            final BaseScaffoldState? baseScaffoldState = context.findAncestorStateOfType<BaseScaffoldState>();
-                            baseScaffoldState?.setSelectedIndex(1);
-                          },
-                          child: const Text('View All', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(7, 20, 7, 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Recent Transactions', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: colorScheme.onSurface)),
+                          GestureDetector(
+                            onTap: () {
+                              final BaseScaffoldState? baseScaffoldState = context.findAncestorStateOfType<BaseScaffoldState>();
+                              baseScaffoldState?.setSelectedIndex(1);
+                            },
+                            child: Text('View All', style: TextStyle(color: colorScheme.primary, fontWeight: FontWeight.w600, fontSize: 14)),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 8),
 
                     if (provider.transactions.isEmpty)
-                      const Center(child: Text('No transactions found. Start by adding a new one!'))
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 20.0),
+                          child: Text(
+                            'No transactions found. Start by adding a new one!',
+                            style: TextStyle(color: colorScheme.onSurfaceVariant),
+                          ),
+                        ),
+                      )
                     else
-                      ...recentTransactions.map((tx) => TransactionItem(
-                        tx: tx,
+                      ...recentTransactions.map((tx) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Card(
+                          margin: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(
+                              color: colorScheme.outline.withAlpha(153),
+                              width: 1.0,
+                            ),
+                          ),
+                          elevation: 0,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: TransactionItem(tx: tx),
+                          ),
+                        ),
                       )).toList(),
                   ],
                 ),
@@ -113,15 +142,17 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
-          );
-        },
-        backgroundColor: Colors.blueAccent,
-        child: const Icon(Icons.add, color: Colors.white),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
+            );
+          },
+          backgroundColor: colorScheme.secondary,
+          foregroundColor: colorScheme.onSecondary,
+          tooltip: 'Add Transaction',
+          child: const Icon(Icons.add, size: 28),
+        ),
       ),
     );
   }

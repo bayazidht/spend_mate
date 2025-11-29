@@ -7,34 +7,51 @@ import '../providers/settings_provider.dart';
 import '../screens/transactions/transaction_detail_screen.dart';
 
 class TransactionItem extends StatelessWidget {
-
   final TransactionModel tx;
   const TransactionItem({super.key, required this.tx});
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final currency = Provider.of<SettingsProvider>(context).selectedCurrency;
 
-    final String name = tx.category;
+    final String categoryName = tx.category;
     final double amount = tx.amount;
     final bool isIncome = tx.type == TransactionType.income;
     final String date = DateFormat('MMM dd, yyyy').format(tx.date);
 
+    final amountColor = isIncome ? colorScheme.primary : colorScheme.error;
+    final iconColor = isIncome ? colorScheme.primary : colorScheme.error;
+    final bgColor = isIncome
+        ? colorScheme.primary.withAlpha(51)
+        : colorScheme.error.withAlpha(51);
+
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: isIncome ? Colors.green.shade100 : Colors.red.shade100,
+        radius: 20,
+        backgroundColor: bgColor,
         child: Icon(
-          isIncome ? Icons.arrow_upward : Icons.arrow_downward,
-          color: isIncome ? Colors.green : Colors.red,
+          isIncome ? Icons.arrow_downward : Icons.arrow_upward,
+          color: iconColor,
         ),
       ),
-      title: Text(name),
-      subtitle: Text(date),
+      title: Text(
+        categoryName,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: colorScheme.onSurface,
+        ),
+      ),
+      subtitle: Text(
+        date,
+        style: TextStyle(color: colorScheme.onSurfaceVariant),
+      ),
       trailing: Text(
         '${isIncome ? '+' : '-'}$currency${amount.toStringAsFixed(0)}',
         style: TextStyle(
-          color: isIncome ? Colors.green : Colors.red,
-          fontWeight: FontWeight.bold,
+          color: amountColor,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
         ),
       ),
       onTap: () {
