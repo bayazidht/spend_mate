@@ -25,7 +25,7 @@ class BaseScaffoldState extends State<BaseScaffold> {
   static final List<Widget> _widgetOptions = <Widget>[
     const HomeScreen(),
     const TransactionsScreen(),
-     GraphsScreen(),
+    GraphsScreen(),
     const SettingsScreen(),
   ];
 
@@ -35,33 +35,53 @@ class BaseScaffoldState extends State<BaseScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: _widgetOptions.elementAt(_selectedIndex),
 
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.money),
-            label: 'Transaction',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: 'Graphs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blueAccent,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(20),
+              blurRadius: 8,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_rounded),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.format_list_bulleted_rounded),
+              label: 'Transactions',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.bar_chart_rounded),
+              label: 'Graphs',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings_rounded),
+              label: 'Settings',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+
+          selectedItemColor: colorScheme.primary,
+          unselectedItemColor: colorScheme.onSurfaceVariant, 
+          backgroundColor: colorScheme.surface, 
+          elevation: 0, 
+
+          onTap: _onItemTapped,
+          type: BottomNavigationBarType.fixed,
+
+          selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+          unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
+        ),
       ),
     );
   }

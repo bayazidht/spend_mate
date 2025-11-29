@@ -35,7 +35,7 @@ class DynamicHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(bottom: 16, left: 7, top: 10),
+            padding: const EdgeInsets.only(bottom: 16, left: 5, top: 10),
             child: Text('Spend Mate', style: TextStyle(color: colorScheme.onPrimary, fontSize: 26, fontWeight: FontWeight.w400)),
           ),
 
