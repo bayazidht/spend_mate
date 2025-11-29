@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:spend_mate/providers/transaction_provider.dart';
 import 'package:spend_mate/models/transaction_model.dart';
-import 'package:spend_mate/screens/transactions/add_transaction_screen.dart';
 import 'package:spend_mate/widgets/dynamic_header.dart';
 import 'package:spend_mate/widgets/summary_card.dart';
 import 'package:spend_mate/widgets/transaction_item.dart';
@@ -141,17 +140,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
-            );
-          },
-          backgroundColor: colorScheme.secondary,
-          foregroundColor: colorScheme.onSecondary,
-          tooltip: 'Add Transaction',
-          child: const Icon(Icons.add, size: 28),
         ),
       ),
     );
