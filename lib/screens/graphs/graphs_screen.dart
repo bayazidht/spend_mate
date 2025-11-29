@@ -71,7 +71,7 @@ class GraphsScreen extends StatelessWidget {
           child: Text(
             title,
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 14,
               fontWeight: FontWeight.bold,
               color: colorScheme.primary,
             ),

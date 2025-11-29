@@ -7,9 +7,7 @@ import 'package:spend_mate/services/auth_service.dart';
 class SignInScreen extends StatelessWidget {
   const SignInScreen({super.key});
 
-  void _launchURL(String url) async {
-    debugPrint('Attempting to launch URL: $url');
-  }
+  void _launchURL(String url) async {}
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +39,7 @@ class SignInScreen extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: colorScheme.primary.withAlpha(100),
+                      color: colorScheme.primary.withAlpha(50),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -157,7 +155,7 @@ class SignInScreen extends StatelessWidget {
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  _launchURL('https://yourwebsite.com/terms');
+                                  _launchURL('https://google.com/terms');
                                 },
                             ),
                             const TextSpan(text: ' and '),
@@ -170,7 +168,7 @@ class SignInScreen extends StatelessWidget {
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  _launchURL('https://yourwebsite.com/privacy');
+                                  _launchURL('https://google.com/privacy');
                                 },
                             ),
                             const TextSpan(text: '.'),

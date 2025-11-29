@@ -25,7 +25,7 @@ class DynamicHeader extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.primary.withAlpha(150),
+            color: colorScheme.primary.withAlpha(100),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -42,19 +42,19 @@ class DynamicHeader extends StatelessWidget {
           Card(
             elevation: 0,
             color: colorScheme.primaryContainer,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(24.0),
               child: SizedBox(
                 width: double.infinity,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Total Balance', style: TextStyle(color: colorScheme.onPrimaryContainer.withAlpha(200), fontSize: 16)),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 8),
                     Text(
                       '$currency${totalBalance.toStringAsFixed(0)}',
-                      style: TextStyle(color: colorScheme.onPrimaryContainer, fontSize: 30, fontWeight: FontWeight.w500),
+                      style: TextStyle(color: colorScheme.onPrimaryContainer, fontSize: 28, fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
@@ -69,9 +69,9 @@ class DynamicHeader extends StatelessWidget {
                 child: Card(
                   elevation: 0,
                   color: colorScheme.surfaceContainerHigh,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   child: Padding(
-                    padding: const EdgeInsets.all(14.0),
+                    padding: const EdgeInsets.all(20.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -82,10 +82,10 @@ class DynamicHeader extends StatelessWidget {
                             Text('Income', style: TextStyle(color: colorScheme.onSurface, fontSize: 16, fontWeight: FontWeight.w400)),
                           ],
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 8),
                         Text(
                           '$currency${totalIncome.toStringAsFixed(0)}',
-                          style: TextStyle(color: colorScheme.primary, fontSize: 24, fontWeight: FontWeight.w500),
+                          style: TextStyle(color: colorScheme.primary, fontSize: 20, fontWeight: FontWeight.w500),
                         ),
                       ],
                     ),
@@ -97,9 +97,9 @@ class DynamicHeader extends StatelessWidget {
                 child: Card(
                   elevation: 0,
                   color: colorScheme.surfaceContainerHigh,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   child: Padding(
-                    padding: const EdgeInsets.all(14.0),
+                    padding: const EdgeInsets.all(20.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -110,10 +110,10 @@ class DynamicHeader extends StatelessWidget {
                             Text('Expense', style: TextStyle(color: colorScheme.onSurface, fontSize: 16, fontWeight: FontWeight.w400)),
                           ],
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 8),
                         Text(
                           '$currency${totalExpense.toStringAsFixed(0)}',
-                          style: TextStyle(color: colorScheme.error, fontSize: 24, fontWeight: FontWeight.w500),
+                          style: TextStyle(color: colorScheme.error, fontSize: 20, fontWeight: FontWeight.w500),
                         ),
                       ],
                     ),

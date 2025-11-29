@@ -39,7 +39,7 @@ class SummaryCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         '+ $currency${income.toStringAsFixed(0)}',
-                        style: TextStyle(fontSize: 22, color: colorScheme.primary, fontWeight: FontWeight.w500),
+                        style: TextStyle(fontSize: 18, color: colorScheme.primary, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
@@ -52,7 +52,7 @@ class SummaryCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         '- $currency${expense.toStringAsFixed(0)}',
-                        style: TextStyle(fontSize: 22, color: colorScheme.error, fontWeight: FontWeight.w500),
+                        style: TextStyle(fontSize: 18, color: colorScheme.error, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
