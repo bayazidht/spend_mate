@@ -164,7 +164,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     final colorScheme = Theme.of(context).colorScheme;
 
     final List<app_category.CategoryModel> currentCategories =
-    _type == app_category.CategoryType.expense
+        _type == app_category.CategoryType.expense
         ? categoryProvider.expenseCategories
         : categoryProvider.incomeCategories;
 
@@ -180,7 +180,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: colorScheme.outline.withAlpha(178), width: 1.0),
+        borderSide: BorderSide(
+          color: colorScheme.outline.withAlpha(178),
+          width: 1.0,
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -208,11 +211,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 onSelectionChanged: isEditing
                     ? null
                     : (Set<app_category.CategoryType> newSelection) {
-                  setState(() {
-                    _type = newSelection.first;
-                    _selectedCategoryName = null;
-                  });
-                },
+                        setState(() {
+                          _type = newSelection.first;
+                          _selectedCategoryName = null;
+                        });
+                      },
                 style: SegmentedButton.styleFrom(
                   foregroundColor: colorScheme.onSurface,
                   selectedBackgroundColor: colorScheme.primaryContainer,
@@ -244,7 +247,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ),
                 decoration: inputDecoration.copyWith(
                   labelText: 'Amount ($currency)',
-                  prefixIcon: Icon(Icons.money, color: colorScheme.onSurfaceVariant),
+                  prefixIcon: Icon(
+                    Icons.money,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -264,53 +270,63 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
               currentCategories.isEmpty
                   ? Center(
-                child: Text(
-                  'No categories available. Please add one in Settings.',
-                  style: TextStyle(color: colorScheme.error),
-                ),
-              )
+                      child: Text(
+                        'No categories available. Please add one in Settings.',
+                        style: TextStyle(color: colorScheme.error),
+                      ),
+                    )
                   : DropdownButtonFormField<String>(
-                decoration: inputDecoration.copyWith(
-                  labelText: 'Category',
-                  prefixIcon: Icon(Icons.category, color: colorScheme.onSurfaceVariant),
-                ),
-                value: _selectedCategoryName,
-                items: currentCategories.map((
-                    app_category.CategoryModel category,
-                    ) {
-                  return DropdownMenuItem<String>(
-                    value: category.name,
-                    child: Text(category.name, style: TextStyle(color: colorScheme.onSurface)),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedCategoryName = newValue;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select a category';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _selectedCategoryName = value;
-                },
-              ),
+                      borderRadius: BorderRadius.circular(15),
+                      decoration: inputDecoration.copyWith(
+                        labelText: 'Category',
+                        prefixIcon: Icon(
+                          Icons.category,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      initialValue: _selectedCategoryName,
+                      items: currentCategories.map((
+                        app_category.CategoryModel category,
+                      ) {
+                        return DropdownMenuItem<String>(
+                          value: category.name,
+                          child: Text(
+                            category.name,
+                            style: TextStyle(color: colorScheme.onSurface),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedCategoryName = newValue;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please select a category';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _selectedCategoryName = value;
+                      },
+                    ),
               const SizedBox(height: 20),
 
               ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(
-                    color: colorScheme.outline,
-                    width: 1.0,
-                  ),
+                  side: BorderSide(color: colorScheme.outline, width: 1.0),
                 ),
                 tileColor: colorScheme.surfaceContainer,
-                leading: Icon(Icons.calendar_today, color: colorScheme.onSurfaceVariant),
+                leading: Icon(
+                  Icons.calendar_today,
+                  color: colorScheme.onSurfaceVariant,
+                ),
                 title: Text(
                   'Date: ${DateFormat('EEE, MMM d, yyyy').format(_date)}',
                   style: TextStyle(fontSize: 16, color: colorScheme.onSurface),
@@ -324,7 +340,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 controller: _notesController,
                 decoration: inputDecoration.copyWith(
                   labelText: 'Notes (Optional)',
-                  prefixIcon: Icon(Icons.note, color: colorScheme.onSurfaceVariant),
+                  prefixIcon: Icon(
+                    Icons.note,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 maxLines: 3,
                 minLines: 1,
@@ -347,7 +366,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ),
                 child: Text(
                   isEditing ? 'Update Transaction' : 'Save Transaction',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],

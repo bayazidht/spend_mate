@@ -186,10 +186,11 @@ class SettingsScreen extends StatelessWidget {
       title: const Text('Currency'),
       trailing: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
+          borderRadius: BorderRadius.circular(15),
           value: settingsProvider.selectedCurrency,
           items: availableCurrencies.map((CurrencyModel currency) {
             return DropdownMenuItem<String>(
-              value: currency.code,
+              value: currency.symbol,
               child: Text(
                 '${currency.code} (${currency.symbol})',
                 style: TextStyle(color: colorScheme.onSurface),

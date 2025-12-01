@@ -13,7 +13,8 @@ class TransactionsScreen extends StatefulWidget {
   State<TransactionsScreen> createState() => _TransactionsScreenState();
 }
 
-class _TransactionsScreenState extends State<TransactionsScreen> with SingleTickerProviderStateMixin {
+class _TransactionsScreenState extends State<TransactionsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   String? _selectedCategory;
@@ -32,31 +33,46 @@ class _TransactionsScreenState extends State<TransactionsScreen> with SingleTick
     super.dispose();
   }
 
-  List<TransactionModel> _getFilteredTransactions(List<TransactionModel> allTransactions, int tabIndex) {
+  List<TransactionModel> _getFilteredTransactions(
+    List<TransactionModel> allTransactions,
+    int tabIndex,
+  ) {
     Iterable<TransactionModel> filteredTransactions = allTransactions;
     if (tabIndex == 1) {
-      filteredTransactions = allTransactions.where((tx) => tx.type == TransactionType.income);
+      filteredTransactions = allTransactions.where(
+        (tx) => tx.type == TransactionType.income,
+      );
     } else if (tabIndex == 2) {
-      filteredTransactions = allTransactions.where((tx) => tx.type == TransactionType.expense);
+      filteredTransactions = allTransactions.where(
+        (tx) => tx.type == TransactionType.expense,
+      );
     }
     if (_selectedType != null) {
-      filteredTransactions = filteredTransactions.where((tx) => tx.type == _selectedType);
+      filteredTransactions = filteredTransactions.where(
+        (tx) => tx.type == _selectedType,
+      );
     }
     if (_selectedCategory != null && _selectedCategory != 'All Categories') {
-      filteredTransactions = filteredTransactions.where((tx) => tx.category == _selectedCategory);
+      filteredTransactions = filteredTransactions.where(
+        (tx) => tx.category == _selectedCategory,
+      );
     }
     if (_selectedDate != null) {
-      filteredTransactions = filteredTransactions.where((tx) =>
-      tx.date.year == _selectedDate!.year &&
-          tx.date.month == _selectedDate!.month &&
-          tx.date.day == _selectedDate!.day
+      filteredTransactions = filteredTransactions.where(
+        (tx) =>
+            tx.date.year == _selectedDate!.year &&
+            tx.date.month == _selectedDate!.month &&
+            tx.date.day == _selectedDate!.day,
       );
     }
     return filteredTransactions.toList()
       ..sort((a, b) => b.date.compareTo(a.date));
   }
 
-  Future<void> _selectDate(BuildContext context, StateSetter setStateDialog) async {
+  Future<void> _selectDate(
+    BuildContext context,
+    StateSetter setStateDialog,
+  ) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate ?? DateTime.now(),
@@ -72,7 +88,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> with SingleTick
   }
 
   void _showFilterBottomSheet(ColorScheme colorScheme) {
-    final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
+    final categoryProvider = Provider.of<CategoryProvider>(
+      context,
+      listen: false,
+    );
 
     final Map<String, TransactionType?> typeOptions = {
       'All Types': null,
@@ -89,13 +108,16 @@ class _TransactionsScreenState extends State<TransactionsScreen> with SingleTick
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setStateSheet) {
-
             List<String> availableCategories = ['All Categories'];
 
             if (_selectedType == TransactionType.income) {
-              availableCategories.addAll(categoryProvider.incomeCategories.map((c) => c.name));
+              availableCategories.addAll(
+                categoryProvider.incomeCategories.map((c) => c.name),
+              );
             } else if (_selectedType == TransactionType.expense) {
-              availableCategories.addAll(categoryProvider.expenseCategories.map((c) => c.name));
+              availableCategories.addAll(
+                categoryProvider.expenseCategories.map((c) => c.name),
+              );
             }
 
             return Padding(
@@ -127,12 +149,19 @@ class _TransactionsScreenState extends State<TransactionsScreen> with SingleTick
                     ],
                   ),
                   const Divider(height: 20),
-                  const Text('Transaction Type', style: TextStyle(fontWeight: FontWeight.w500)),
+                  const Text(
+                    'Transaction Type',
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<TransactionType?>(
+                    borderRadius: BorderRadius.circular(15),
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 10,
+                      ),
                     ),
                     initialValue: _selectedType,
                     hint: const Text('All Types'),
@@ -150,18 +179,27 @@ class _TransactionsScreenState extends State<TransactionsScreen> with SingleTick
                     },
                   ),
                   const SizedBox(height: 20),
-                  const Text('Category Filter', style: TextStyle(fontWeight: FontWeight.w500)),
+                  const Text(
+                    'Category Filter',
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
                   const SizedBox(height: 8),
                   Tooltip(
                     message: _selectedType == null
                         ? 'Select Transaction Type first'
                         : 'Select Category',
                     child: DropdownButtonFormField<String>(
+                      borderRadius: BorderRadius.circular(15),
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 10,
+                        ),
                         enabled: _selectedType != null,
-                        fillColor: _selectedType == null ? colorScheme.surfaceContainer : colorScheme.surface,
+                        fillColor: _selectedType == null
+                            ? colorScheme.surfaceContainer
+                            : colorScheme.surface,
                         filled: true,
                       ),
                       initialValue: _selectedCategory ?? 'All Categories',
@@ -171,16 +209,28 @@ class _TransactionsScreenState extends State<TransactionsScreen> with SingleTick
                           child: Text(category),
                         );
                       }).toList(),
-                      onChanged: _selectedType == null ? null : (String? newValue) {
-                        setStateSheet(() {
-                          _selectedCategory = (newValue == 'All Categories' ? null : newValue);
-                        });
-                      },
-                      hint: Text(_selectedType == null ? 'Select Type above' : 'All Categories'),
+                      onChanged: _selectedType == null
+                          ? null
+                          : (String? newValue) {
+                              setStateSheet(() {
+                                _selectedCategory =
+                                    (newValue == 'All Categories'
+                                    ? null
+                                    : newValue);
+                              });
+                            },
+                      hint: Text(
+                        _selectedType == null
+                            ? 'Select Type above'
+                            : 'All Categories',
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text('Specific Date', style: TextStyle(fontWeight: FontWeight.w500)),
+                  const Text(
+                    'Specific Date',
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
                   const SizedBox(height: 8),
                   GestureDetector(
                     onTap: () => _selectDate(context, setStateSheet),
@@ -189,16 +239,23 @@ class _TransactionsScreenState extends State<TransactionsScreen> with SingleTick
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           suffixIcon: Icon(Icons.edit_calendar),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 10,
+                          ),
                         ),
                         controller: TextEditingController(
                           text: _selectedDate == null
                               ? 'Select a specific date'
-                              : DateFormat('dd MMM yyyy').format(_selectedDate!),
+                              : DateFormat(
+                                  'dd MMM yyyy',
+                                ).format(_selectedDate!),
                         ),
                         style: TextStyle(
-                            color: _selectedDate == null ? colorScheme.onSurfaceVariant : colorScheme.onSurface,
-                            fontWeight: FontWeight.w500
+                          color: _selectedDate == null
+                              ? colorScheme.onSurfaceVariant
+                              : colorScheme.onSurface,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
@@ -238,7 +295,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> with SingleTick
                       ),
                     ],
                   ),
-                  const SizedBox(height: 30)
+                  const SizedBox(height: 30),
                 ],
               ),
             );
@@ -291,12 +348,27 @@ class _TransactionsScreenState extends State<TransactionsScreen> with SingleTick
     );
   }
 
-  Widget _buildTransactionList(List<TransactionModel> allTransactions, int tabIndex, ColorScheme colorScheme) {
-    final filteredTransactions = _getFilteredTransactions(allTransactions, tabIndex);
+  Widget _buildTransactionList(
+    List<TransactionModel> allTransactions,
+    int tabIndex,
+    ColorScheme colorScheme,
+  ) {
+    final filteredTransactions = _getFilteredTransactions(
+      allTransactions,
+      tabIndex,
+    );
 
     if (filteredTransactions.isEmpty) {
-      final type = tabIndex == 1 ? 'Income' : tabIndex == 2 ? 'Expense' : 'Transactions';
-      final icon = tabIndex == 1 ? Icons.arrow_downward : tabIndex == 2 ? Icons.arrow_upward : Icons.description;
+      final type = tabIndex == 1
+          ? 'Income'
+          : tabIndex == 2
+          ? 'Expense'
+          : 'Transactions';
+      final icon = tabIndex == 1
+          ? Icons.arrow_downward
+          : tabIndex == 2
+          ? Icons.arrow_upward
+          : Icons.description;
       final iconColor = tabIndex == 1 ? colorScheme.primary : colorScheme.error;
 
       return Center(
@@ -310,9 +382,14 @@ class _TransactionsScreenState extends State<TransactionsScreen> with SingleTick
               Text(
                 'No $type yet. Start adding your financial records!',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: colorScheme.onSurfaceVariant),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
-              if (_selectedCategory != null || _selectedDate != null || _selectedType != null)
+              if (_selectedCategory != null ||
+                  _selectedDate != null ||
+                  _selectedType != null)
                 Text(
                   '(Current filters applied)',
                   style: TextStyle(fontSize: 14, color: colorScheme.outline),
@@ -343,9 +420,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> with SingleTick
             elevation: 0,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: TransactionItem(
-                tx: transaction,
-              ),
+              child: TransactionItem(tx: transaction),
             ),
           );
         },
