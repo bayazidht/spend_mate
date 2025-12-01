@@ -28,62 +28,160 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
     super.dispose();
   }
 
-  void _showAddCategoryDialog(CategoryType type) {
+  Widget _buildIconGrid(
+      ColorScheme colorScheme,
+      String selectedIconName,
+      Function(String) onIconSelected,
+      ) {
+    return SizedBox(
+      height: 300,
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 5,
+          childAspectRatio: 1.0,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+        ),
+        itemCount: availableIcons.length,
+        itemBuilder: (context, index) {
+          final iconEntry = availableIcons.entries.elementAt(index);
+          final iconName = iconEntry.key;
+          final IconData iconData = iconEntry.value;
+          final isSelected = iconName == selectedIconName;
+
+          return GestureDetector(
+            onTap: () {
+              onIconSelected(iconName);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? colorScheme.primary.withAlpha(30)
+                    : colorScheme.surfaceContainerHigh,
+                shape: BoxShape.circle,
+                border: isSelected
+                    ? Border.all(color: colorScheme.primary, width: 3)
+                    : null,
+              ),
+              child: Icon(
+                iconData,
+                color: isSelected
+                    ? colorScheme.primary
+                    : colorScheme.onSurfaceVariant,
+                size: 30,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showAddCategoryBottomSheet(CategoryType type) {
     final provider = Provider.of<CategoryProvider>(context, listen: false);
     final TextEditingController nameController = TextEditingController();
     final String typeName = type == CategoryType.income ? 'Income' : 'Expense';
     final colorScheme = Theme.of(context).colorScheme;
-    final actionColor = type == CategoryType.income ? colorScheme.primary : colorScheme.error;
+    final actionColor = type == CategoryType.income
+        ? colorScheme.primary
+        : colorScheme.error;
 
-    showDialog(
+    String tempSelectedIconName = availableIcons.keys.first;
+
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Text(
-            'Add $typeName Category',
-            style: TextStyle(
-              color: colorScheme.onSurface,
-              fontWeight: FontWeight.bold,
-              fontSize: 16
-            ),
-          ),
-          content: TextField(
-            controller: nameController,
-            decoration: InputDecoration(
-              hintText: 'Category Name',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: actionColor,
-                  width: 2,
+        return StatefulBuilder(
+          builder: (context, setStateSheet) {
+            String currentSelectedIconName = tempSelectedIconName;
+
+            return Padding(
+              padding: EdgeInsets.fromViewPadding(
+                View.of(context).viewInsets,
+                View.of(context).devicePixelRatio,
+              ).copyWith(top: 20, bottom: 20, left: 20, right: 20),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Add $typeName Category',
+                      style: TextStyle(
+                        color: colorScheme.onSurface,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: nameController,
+                      decoration: InputDecoration(
+                        hintText: 'Category Name',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: actionColor, width: 2),
+                        ),
+                      ),
+                      autofocus: true,
+                    ),
+                    const SizedBox(height: 15),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Select Icon:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: colorScheme.onSurface,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    _buildIconGrid(
+                      colorScheme,
+                      currentSelectedIconName,
+                          (String newIconName) {
+                        setStateSheet(() {
+                          tempSelectedIconName = newIconName;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: actionColor,
+                        foregroundColor: colorScheme.onError,
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                      ),
+                      onPressed: () {
+                        if (nameController.text.trim().isNotEmpty) {
+                          provider.addCategory(
+                            nameController.text.trim(),
+                            type,
+                            tempSelectedIconName,
+                          );
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: const Text(
+                        'Add Category',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            autofocus: true,
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel', style: TextStyle(color: colorScheme.onSurfaceVariant)),
-            ),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: actionColor,
-                foregroundColor: colorScheme.onError,
-              ),
-              onPressed: () {
-                if (nameController.text.trim().isNotEmpty) {
-                  provider.addCategory(nameController.text.trim(), type, 'food');
-                  Navigator.of(context).pop();
-                }
-              },
-              child: const Text('Add'),
-            ),
-          ],
+            );
+          },
         );
       },
     );
@@ -140,7 +238,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
               ? CategoryType.expense
               : CategoryType.income;
 
-          _showAddCategoryDialog(selectedType);
+          _showAddCategoryBottomSheet(selectedType);
         },
         child: const Icon(Icons.add_rounded, size: 30),
       ),
@@ -161,7 +259,9 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                type == CategoryType.income ? Icons.payments_rounded : Icons.shopping_bag_rounded,
+                type == CategoryType.income
+                    ? Icons.payments_rounded
+                    : Icons.shopping_bag_rounded,
                 size: 60,
                 color: colorScheme.outlineVariant,
               ),
@@ -187,7 +287,9 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
       );
     }
 
-    final iconColor = type == CategoryType.income ? colorScheme.primary : colorScheme.error;
+    final iconColor = type == CategoryType.income
+        ? colorScheme.primary
+        : colorScheme.error;
     final backgroundColor = colorScheme.surfaceContainerLow;
 
     return ListView.builder(
@@ -196,6 +298,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
       itemBuilder: (context, index) {
         final category = categories[index];
         final IconData? categoryIconData = availableIcons[category.iconName];
+
         return Padding(
           padding: const EdgeInsets.only(bottom: 5.0),
           child: Card(
@@ -219,11 +322,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
                   shape: BoxShape.circle,
                   color: iconColor.withAlpha(30),
                 ),
-                child: Icon(
-                  categoryIconData,
-                  color: iconColor,
-                  size: 24,
-                ),
+                child: Icon(categoryIconData, color: iconColor, size: 24),
               ),
               title: Text(
                 category.name,
@@ -233,12 +332,17 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
                 ),
               ),
               trailing: IconButton(
-                icon: Icon(Icons.delete_outline_rounded, color: colorScheme.error),
+                icon: Icon(
+                  Icons.delete_outline_rounded,
+                  color: colorScheme.error,
+                ),
                 onPressed: () async {
                   final bool? confirm = await showDialog<bool>(
                     context: context,
                     builder: (ctx) => AlertDialog(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       title: const Text('Confirm Deletion'),
                       content: Text(
                         'Are you sure you want to delete the category "${category.name}"? This action cannot be undone.',
@@ -246,14 +350,22 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.of(ctx).pop(false),
-                          child: Text('Cancel', style: TextStyle(color: colorScheme.onSurfaceVariant)),
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          ),
                         ),
                         FilledButton(
                           style: FilledButton.styleFrom(
                             backgroundColor: colorScheme.error,
                           ),
                           onPressed: () => Navigator.of(ctx).pop(true),
-                          child: Text('Delete', style: TextStyle(color: colorScheme.onError)),
+                          child: Text(
+                            'Delete',
+                            style: TextStyle(color: colorScheme.onError),
+                          ),
                         ),
                       ],
                     ),

@@ -52,7 +52,7 @@ class CategoryProvider with ChangeNotifier {
         id: '',
         name: name,
         type: type,
-        iconName: '',
+        iconName: iconName,
       );
       await _service!.addCategory(newCategory);
     }
