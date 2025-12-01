@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:spend_mate/models/category_model.dart';
 import 'package:spend_mate/providers/category_provider.dart';
 
+import '../../data/default_category_icons.dart';
+
 class ManageCategoriesScreen extends StatefulWidget {
   const ManageCategoriesScreen({super.key});
 
@@ -75,7 +77,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
               ),
               onPressed: () {
                 if (nameController.text.trim().isNotEmpty) {
-                  provider.addCategory(nameController.text.trim(), type);
+                  provider.addCategory(nameController.text.trim(), type, 'food');
                   Navigator.of(context).pop();
                 }
               },
@@ -193,6 +195,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
       itemCount: categories.length,
       itemBuilder: (context, index) {
         final category = categories[index];
+        final IconData? categoryIconData = availableIcons[category.iconName];
         return Padding(
           padding: const EdgeInsets.only(bottom: 5.0),
           child: Card(
@@ -217,9 +220,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
                   color: iconColor.withAlpha(30),
                 ),
                 child: Icon(
-                  type == CategoryType.expense
-                      ? Icons.arrow_upward_rounded
-                      : Icons.arrow_downward_rounded,
+                  categoryIconData,
                   color: iconColor,
                   size: 24,
                 ),

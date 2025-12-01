@@ -65,7 +65,7 @@ class TransactionProvider with ChangeNotifier {
     for (var tx in _transactions) {
       if (tx.type == TransactionType.expense) {
         totalExpense += tx.amount;
-        categoryExpenses[tx.category] = (categoryExpenses[tx.category] ?? 0) + tx.amount;
+        categoryExpenses[tx.categoryId] = (categoryExpenses[tx.categoryId] ?? 0) + tx.amount;
       }
     }
 

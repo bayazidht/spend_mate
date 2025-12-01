@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spend_mate/models/transaction_model.dart';
-import 'package:spend_mate/models/category_model.dart' as app_category;
+import 'package:spend_mate/models/category_model.dart';
 import 'package:spend_mate/services/transaction_service.dart';
 import 'package:spend_mate/providers/category_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
+import '../../data/default_category_icons.dart';
 import '../../providers/settings_provider.dart';
 
 class AddTransactionScreen extends StatefulWidget {
@@ -21,9 +22,9 @@ class AddTransactionScreen extends StatefulWidget {
 class _AddTransactionScreenState extends State<AddTransactionScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  app_category.CategoryType _type = app_category.CategoryType.expense;
+  CategoryType _type = CategoryType.expense;
   double _amount = 0.0;
-  String? _selectedCategoryName;
+  String? _selectedCategoryId;
   DateTime _date = DateTime.now();
   String _notes = '';
 
@@ -38,10 +39,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       final tx = widget.transactionToEdit!;
 
       _type = tx.type == TransactionType.income
-          ? app_category.CategoryType.income
-          : app_category.CategoryType.expense;
+          ? CategoryType.income
+          : CategoryType.expense;
       _amount = tx.amount;
-      _selectedCategoryName = tx.category;
+      _selectedCategoryId = tx.categoryId;
       _date = tx.date;
       _notes = tx.notes;
 
@@ -58,20 +59,20 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   }
 
   void _setDefaultCategory(CategoryProvider provider) {
-    List<app_category.CategoryModel> currentCategories;
+    List<CategoryModel> currentCategories;
 
-    if (_type == app_category.CategoryType.expense) {
+    if (_type == CategoryType.expense) {
       currentCategories = provider.expenseCategories;
     } else {
       currentCategories = provider.incomeCategories;
     }
 
     if (widget.transactionToEdit == null ||
-        !currentCategories.any((c) => c.name == _selectedCategoryName)) {
+        !currentCategories.any((c) => c.id == _selectedCategoryId)) {
       if (currentCategories.isNotEmpty) {
-        _selectedCategoryName = currentCategories.first.name;
+        _selectedCategoryId = currentCategories.first.id;
       } else {
-        _selectedCategoryName = null;
+        _selectedCategoryId = null;
       }
     }
   }
@@ -108,7 +109,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       _formKey.currentState!.save();
 
       final userId = FirebaseAuth.instance.currentUser?.uid;
-      if (userId == null || _selectedCategoryName == null) {
+      if (userId == null || _selectedCategoryId == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
@@ -121,16 +122,23 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
       final String transactionId = widget.transactionToEdit?.id ?? '';
 
+      final CategoryProvider provider = Provider.of<CategoryProvider>(
+        context,
+        listen: false,
+      );
+      final CategoryModel selectedCategoryModel = provider.getCategoryById(
+        _selectedCategoryId!,
+      );
+
       final transactionToSave = TransactionModel(
         id: transactionId,
         amount: _amount,
-        type: _type == app_category.CategoryType.income
+        type: _type == CategoryType.income
             ? TransactionType.income
             : TransactionType.expense,
-        category: _selectedCategoryName!,
+        categoryId: selectedCategoryModel.id,
         date: _date,
         notes: _notes,
-        userId: userId,
       );
 
       final TransactionService service = TransactionService();
@@ -163,13 +171,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     final isEditing = widget.transactionToEdit != null;
     final colorScheme = Theme.of(context).colorScheme;
 
-    final List<app_category.CategoryModel> currentCategories =
-        _type == app_category.CategoryType.expense
+    final List<CategoryModel> currentCategories = _type == CategoryType.expense
         ? categoryProvider.expenseCategories
         : categoryProvider.incomeCategories;
 
-    if (_selectedCategoryName == null ||
-        !currentCategories.any((c) => c.name == _selectedCategoryName)) {
+    if (_selectedCategoryId == null ||
+        !currentCategories.any((c) => c.id == _selectedCategoryId)) {
       _setDefaultCategory(categoryProvider);
     }
 
@@ -206,14 +213,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              SegmentedButton<app_category.CategoryType>(
+              SegmentedButton<CategoryType>(
                 selected: {_type},
                 onSelectionChanged: isEditing
                     ? null
-                    : (Set<app_category.CategoryType> newSelection) {
+                    : (Set<CategoryType> newSelection) {
                         setState(() {
                           _type = newSelection.first;
-                          _selectedCategoryName = null;
+                          _selectedCategoryId = null;
                         });
                       },
                 style: SegmentedButton.styleFrom(
@@ -223,13 +230,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   minimumSize: const Size(0, 50),
                 ),
                 segments: const [
-                  ButtonSegment<app_category.CategoryType>(
-                    value: app_category.CategoryType.expense,
+                  ButtonSegment<CategoryType>(
+                    value: CategoryType.expense,
                     label: Text('Expense'),
                     icon: Icon(Icons.arrow_downward),
                   ),
-                  ButtonSegment<app_category.CategoryType>(
-                    value: app_category.CategoryType.income,
+                  ButtonSegment<CategoryType>(
+                    value: CategoryType.income,
                     label: Text('Income'),
                     icon: Icon(Icons.arrow_upward),
                   ),
@@ -279,26 +286,31 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       borderRadius: BorderRadius.circular(15),
                       decoration: inputDecoration.copyWith(
                         labelText: 'Category',
-                        prefixIcon: Icon(
-                          Icons.category,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
                       ),
-                      initialValue: _selectedCategoryName,
-                      items: currentCategories.map((
-                        app_category.CategoryModel category,
-                      ) {
+                      initialValue: _selectedCategoryId,
+                      items: currentCategories.map((CategoryModel category) {
+                        final IconData? iconData = availableIcons[category.iconName];
                         return DropdownMenuItem<String>(
-                          value: category.name,
-                          child: Text(
-                            category.name,
-                            style: TextStyle(color: colorScheme.onSurface),
+                          value: category.id,
+                          child: Row(
+                            children: [
+                              Icon(
+                                iconData,
+                                size: 20,
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                category.name,
+                                style: TextStyle(color: colorScheme.onSurface),
+                              ),
+                            ],
                           ),
                         );
                       }).toList(),
                       onChanged: (String? newValue) {
                         setState(() {
-                          _selectedCategoryName = newValue;
+                          _selectedCategoryId = newValue;
                         });
                       },
                       validator: (value) {
@@ -308,7 +320,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         return null;
                       },
                       onSaved: (value) {
-                        _selectedCategoryName = value;
+                        _selectedCategoryId = value;
                       },
                     ),
               const SizedBox(height: 20),

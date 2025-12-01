@@ -29,11 +29,12 @@ class TransactionDetailScreen extends StatelessWidget {
           content: Text('Are you sure you want to delete this transaction?', style: TextStyle(color: colorScheme.onSurfaceVariant)),
           actions: [
             TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text('Cancel', style: TextStyle(color: colorScheme.primary))),
-            TextButton(
-                onPressed: () {
-                  Navigator.of(ctx).pop(true);
-                },
-                child: Text('Delete', style: TextStyle(color: colorScheme.error))
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: colorScheme.error,
+              ),
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: Text('Delete', style: TextStyle(color: colorScheme.onError)),
             ),
           ],
         ),
@@ -92,14 +93,14 @@ class TransactionDetailScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          transaction.category,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: colorScheme.onSurface,
-                          ),
-                        ),
+                        // Text(
+                        //   transaction.category,
+                        //   style: TextStyle(
+                        //     fontSize: 18,
+                        //     fontWeight: FontWeight.bold,
+                        //     color: colorScheme.onSurface,
+                        //   ),
+                        // ),
                         Text(
                           '${isIncome ? '+' : '-'}$currency${transaction.amount.toStringAsFixed(2)}',
                           style: TextStyle(

@@ -6,19 +6,17 @@ class TransactionModel {
   final String id;
   final double amount;
   final TransactionType type;
-  final String category;
+  final String categoryId;
   final DateTime date;
   final String notes;
-  final String userId;
 
   TransactionModel({
     required this.id,
     required this.amount,
     required this.type,
-    required this.category,
+    required this.categoryId,
     required this.date,
-    required this.notes,
-    required this.userId,
+    required this.notes
   });
 
   factory TransactionModel.fromFirestore(DocumentSnapshot doc) {
@@ -27,10 +25,9 @@ class TransactionModel {
       id: doc.id,
       amount: (data['amount'] as num).toDouble(),
       type: data['type'] == 'income' ? TransactionType.income : TransactionType.expense,
-      category: data['category'] ?? 'Other',
+      categoryId: data['categoryId'],
       date: (data['date'] as Timestamp).toDate(),
-      notes: data['notes'],
-      userId: data['userId'],
+      notes: data['notes']
     );
   }
 
@@ -38,10 +35,9 @@ class TransactionModel {
     return {
       'amount': amount,
       'type': type == TransactionType.income ? 'income' : 'expense',
-      'category': category,
+      'categoryId': categoryId,
       'date': Timestamp.fromDate(date),
       'notes': notes,
-      'userId': userId,
       'timestamp': FieldValue.serverTimestamp(),
     };
   }

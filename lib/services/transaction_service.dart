@@ -45,7 +45,7 @@ class TransactionService {
 
   Future<void> deleteTransactionsByCategory(String categoryName) async {
     final snapshot = await _transactionsRef
-        .where('category', isEqualTo: categoryName)
+        .where('categoryName', isEqualTo: categoryName)
         .get();
 
     if (snapshot.docs.isNotEmpty) {

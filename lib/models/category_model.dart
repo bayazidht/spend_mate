@@ -5,14 +5,15 @@ enum CategoryType { income, expense }
 class CategoryModel {
   final String id;
   final String name;
+  final String iconName;
   final CategoryType type;
-  final String userId;
+
 
   CategoryModel({
     required this.id,
     required this.name,
-    required this.type,
-    required this.userId,
+    required this.iconName,
+    required this.type
   });
 
   factory CategoryModel.fromFirestore(DocumentSnapshot doc) {
@@ -20,8 +21,8 @@ class CategoryModel {
     return CategoryModel(
       id: doc.id,
       name: data['name'] ?? '',
+      iconName: data['iconName'] ?? '',
       type: data['type'] == 'income' ? CategoryType.income : CategoryType.expense,
-      userId: data['userId'],
     );
   }
 
@@ -29,7 +30,7 @@ class CategoryModel {
     return {
       'name': name,
       'type': type == CategoryType.income ? 'income' : 'expense',
-      'userId': userId,
+      'iconName': iconName,
       'timestamp': FieldValue.serverTimestamp(),
     };
   }

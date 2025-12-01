@@ -4,44 +4,44 @@ final List<CategoryModel> defaultExpenseCategories = [
   CategoryModel(
     id: '',
     name: 'Food & Drink',
-    type: CategoryType.expense,
-    userId: 'default',
+    iconName: 'food',
+    type: CategoryType.expense
   ),
   CategoryModel(
     id: '',
     name: 'Transport',
-    type: CategoryType.expense,
-    userId: 'default',
+    iconName: 'transport',
+    type: CategoryType.expense
   ),
   CategoryModel(
     id: '',
     name: 'Shopping',
-    type: CategoryType.expense,
-    userId: 'default',
+    iconName: 'shopping',
+    type: CategoryType.expense
   ),
   CategoryModel(
     id: '',
     name: 'Bills & Utilities',
-    type: CategoryType.expense,
-    userId: 'default',
+    iconName: 'utilities',
+    type: CategoryType.expense
   ),
   CategoryModel(
     id: '',
     name: 'Entertainment',
-    type: CategoryType.expense,
-    userId: 'default',
+    iconName: 'fun',
+    type: CategoryType.expense
   ),
   CategoryModel(
     id: '',
     name: 'Healthcare',
-    type: CategoryType.expense,
-    userId: 'default',
+    iconName: 'health',
+    type: CategoryType.expense
   ),
   CategoryModel(
     id: '',
     name: 'Other',
-    type: CategoryType.expense,
-    userId: 'default',
+    iconName: 'general',
+    type: CategoryType.expense
   ),
 ];
 
@@ -49,32 +49,32 @@ final List<CategoryModel> defaultIncomeCategories = [
   CategoryModel(
     id: '',
     name: 'Salary',
-    type: CategoryType.income,
-    userId: 'default',
+    iconName: 'salary',
+    type: CategoryType.income
   ),
   CategoryModel(
     id: '',
     name: 'Freelance',
-    type: CategoryType.income,
-    userId: 'default',
+    iconName: 'salary',
+    type: CategoryType.income
   ),
   CategoryModel(
     id: '',
     name: 'Investment',
-    type: CategoryType.income,
-    userId: 'default',
+    iconName: 'investment',
+    type: CategoryType.income
   ),
   CategoryModel(
     id: '',
     name: 'Gift',
-    type: CategoryType.income,
-    userId: 'default',
+    iconName: 'gift',
+    type: CategoryType.income
   ),
   CategoryModel(
     id: '',
     name: 'Other',
-    type: CategoryType.income,
-    userId: 'default',
+    iconName: 'general',
+    type: CategoryType.income
   ),
 ];
 

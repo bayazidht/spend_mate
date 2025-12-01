@@ -4,7 +4,10 @@ import 'package:spend_mate/providers/transaction_provider.dart';
 import 'package:spend_mate/widgets/transaction_item.dart';
 import 'package:spend_mate/models/transaction_model.dart';
 import 'package:spend_mate/providers/category_provider.dart';
+import 'package:spend_mate/models/category_model.dart';
 import 'package:intl/intl.dart';
+
+import '../../data/default_category_icons.dart';
 
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
@@ -17,7 +20,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  String? _selectedCategory;
+  String? _selectedCategoryId;
   DateTime? _selectedDate;
   TransactionType? _selectedType;
 
@@ -34,33 +37,33 @@ class _TransactionsScreenState extends State<TransactionsScreen>
   }
 
   List<TransactionModel> _getFilteredTransactions(
-    List<TransactionModel> allTransactions,
-    int tabIndex,
-  ) {
+      List<TransactionModel> allTransactions,
+      int tabIndex,
+      ) {
     Iterable<TransactionModel> filteredTransactions = allTransactions;
     if (tabIndex == 1) {
       filteredTransactions = allTransactions.where(
-        (tx) => tx.type == TransactionType.income,
+            (tx) => tx.type == TransactionType.income,
       );
     } else if (tabIndex == 2) {
       filteredTransactions = allTransactions.where(
-        (tx) => tx.type == TransactionType.expense,
+            (tx) => tx.type == TransactionType.expense,
       );
     }
     if (_selectedType != null) {
       filteredTransactions = filteredTransactions.where(
-        (tx) => tx.type == _selectedType,
+            (tx) => tx.type == _selectedType,
       );
     }
-    if (_selectedCategory != null && _selectedCategory != 'All Categories') {
+    if (_selectedCategoryId != null) {
       filteredTransactions = filteredTransactions.where(
-        (tx) => tx.category == _selectedCategory,
+            (tx) => tx.categoryId == _selectedCategoryId,
       );
     }
     if (_selectedDate != null) {
       filteredTransactions = filteredTransactions.where(
-        (tx) =>
-            tx.date.year == _selectedDate!.year &&
+            (tx) =>
+        tx.date.year == _selectedDate!.year &&
             tx.date.month == _selectedDate!.month &&
             tx.date.day == _selectedDate!.day,
       );
@@ -70,9 +73,9 @@ class _TransactionsScreenState extends State<TransactionsScreen>
   }
 
   Future<void> _selectDate(
-    BuildContext context,
-    StateSetter setStateDialog,
-  ) async {
+      BuildContext context,
+      StateSetter setStateDialog,
+      ) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate ?? DateTime.now(),
@@ -108,17 +111,37 @@ class _TransactionsScreenState extends State<TransactionsScreen>
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setStateSheet) {
-            List<String> availableCategories = ['All Categories'];
+            List<CategoryModel> currentCategoryModels = [];
 
             if (_selectedType == TransactionType.income) {
-              availableCategories.addAll(
-                categoryProvider.incomeCategories.map((c) => c.name),
+              currentCategoryModels.addAll(
+                categoryProvider.incomeCategories,
               );
             } else if (_selectedType == TransactionType.expense) {
-              availableCategories.addAll(
-                categoryProvider.expenseCategories.map((c) => c.name),
+              currentCategoryModels.addAll(
+                categoryProvider.expenseCategories,
               );
             }
+
+            final List<DropdownMenuItem<String>> categoryItems = [
+              const DropdownMenuItem(
+                value: null,
+                child: Text('All Categories'),
+              ),
+              ...currentCategoryModels.map((CategoryModel category) {
+                final IconData? iconData = availableIcons[category.iconName];
+                return DropdownMenuItem<String>(
+                  value: category.id,
+                  child: Row(
+                    children: [
+                      Icon(iconData, size: 20, color: colorScheme.onSurfaceVariant),
+                      const SizedBox(width: 10),
+                      Text(category.name),
+                    ],
+                  ),
+                );
+              }),
+            ];
 
             return Padding(
               padding: EdgeInsets.only(
@@ -174,7 +197,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                     onChanged: (TransactionType? newValue) {
                       setStateSheet(() {
                         _selectedType = newValue;
-                        _selectedCategory = 'All Categories';
+                        _selectedCategoryId = null;
                       });
                     },
                   ),
@@ -188,7 +211,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                     message: _selectedType == null
                         ? 'Select Transaction Type first'
                         : 'Select Category',
-                    child: DropdownButtonFormField<String>(
+                    child: DropdownButtonFormField<String?>(
                       borderRadius: BorderRadius.circular(15),
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
@@ -202,23 +225,15 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                             : colorScheme.surface,
                         filled: true,
                       ),
-                      initialValue: _selectedCategory ?? 'All Categories',
-                      items: availableCategories.map((String category) {
-                        return DropdownMenuItem<String>(
-                          value: category,
-                          child: Text(category),
-                        );
-                      }).toList(),
+                      initialValue: _selectedCategoryId,
+                      items: categoryItems,
                       onChanged: _selectedType == null
                           ? null
                           : (String? newValue) {
-                              setStateSheet(() {
-                                _selectedCategory =
-                                    (newValue == 'All Categories'
-                                    ? null
-                                    : newValue);
-                              });
-                            },
+                        setStateSheet(() {
+                          _selectedCategoryId = newValue;
+                        });
+                      },
                       hint: Text(
                         _selectedType == null
                             ? 'Select Type above'
@@ -248,8 +263,8 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                           text: _selectedDate == null
                               ? 'Select a specific date'
                               : DateFormat(
-                                  'dd MMM yyyy',
-                                ).format(_selectedDate!),
+                            'dd MMM yyyy',
+                          ).format(_selectedDate!),
                         ),
                         style: TextStyle(
                           color: _selectedDate == null
@@ -269,12 +284,12 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                         label: const Text('Clear'),
                         onPressed: () {
                           setState(() {
-                            _selectedCategory = null;
+                            _selectedCategoryId = null;
                             _selectedDate = null;
                             _selectedType = null;
                           });
                           setStateSheet(() {
-                            _selectedCategory = null;
+                            _selectedCategoryId = null;
                             _selectedDate = null;
                             _selectedType = null;
                           });
@@ -349,10 +364,10 @@ class _TransactionsScreenState extends State<TransactionsScreen>
   }
 
   Widget _buildTransactionList(
-    List<TransactionModel> allTransactions,
-    int tabIndex,
-    ColorScheme colorScheme,
-  ) {
+      List<TransactionModel> allTransactions,
+      int tabIndex,
+      ColorScheme colorScheme,
+      ) {
     final filteredTransactions = _getFilteredTransactions(
       allTransactions,
       tabIndex,
@@ -387,11 +402,11 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                   color: colorScheme.onSurfaceVariant,
                 ),
               ),
-              if (_selectedCategory != null ||
+              if (_selectedCategoryId != null ||
                   _selectedDate != null ||
                   _selectedType != null)
                 Text(
-                  '(Current filters applied)',
+                  '(Filters applied)',
                   style: TextStyle(fontSize: 14, color: colorScheme.outline),
                 ),
             ],

@@ -24,6 +24,10 @@ class CategoryProvider with ChangeNotifier {
     }
   }
 
+  CategoryModel getCategoryById(String id) {
+    return _categories.firstWhere((cat) => cat.id == id);
+  }
+
   void _startListeningToCategories() {
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (_service != null) {
@@ -41,14 +45,14 @@ class CategoryProvider with ChangeNotifier {
     await _service?.saveDefaultCategories(userId);
   }
 
-  Future<void> addCategory(String name, CategoryType type) async {
+  Future<void> addCategory(String name, CategoryType type, String iconName) async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (_service != null && userId != null) {
       final newCategory = CategoryModel(
         id: '',
         name: name,
         type: type,
-        userId: userId,
+        iconName: '',
       );
       await _service!.addCategory(newCategory);
     }

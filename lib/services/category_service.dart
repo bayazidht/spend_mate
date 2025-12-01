@@ -48,8 +48,8 @@ class CategoryService {
 
       final categoryData = {
         'name': cat.name,
+        'iconName': cat.iconName,
         'type': cat.type == CategoryType.income ? 'income' : 'expense',
-        'userId': userId,
       };
 
       batch.set(newCatRef, categoryData);

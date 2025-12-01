@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../data/default_category_icons.dart';
 import '../models/transaction_model.dart';
+import '../providers/category_provider.dart';
 import '../providers/settings_provider.dart';
 import '../screens/transactions/transaction_detail_screen.dart';
 
@@ -14,8 +16,13 @@ class TransactionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final currency = Provider.of<SettingsProvider>(context).selectedCurrency;
+    final categoryProvider = Provider.of<CategoryProvider>(context);
 
-    final String categoryName = tx.category;
+    final categoryModel = categoryProvider.getCategoryById(tx.categoryId);
+
+    final String categoryName = categoryModel.name;
+    final IconData? categoryIconData = availableIcons[categoryModel.iconName];
+
     final double amount = tx.amount;
     final bool isIncome = tx.type == TransactionType.income;
     final String date = DateFormat('MMM dd, yyyy').format(tx.date);
@@ -30,8 +37,7 @@ class TransactionItem extends StatelessWidget {
       leading: CircleAvatar(
         radius: 20,
         backgroundColor: bgColor,
-        child: Icon(
-          isIncome ? Icons.arrow_downward : Icons.arrow_upward,
+        child: Icon(categoryIconData,
           color: iconColor,
         ),
       ),
