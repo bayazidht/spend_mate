@@ -16,6 +16,7 @@ class SettingsScreen extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
     final userName = user?.displayName ?? 'User';
     final userEmail = user?.email ?? 'Not set';
+    final userPhotoUrl = user?.photoURL ?? '';
 
     final authService = Provider.of<AuthService>(context, listen: false);
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -33,8 +34,13 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: <Widget>[
-
-          _buildAccountCard(context, colorScheme, userName, userEmail),
+          _buildAccountCard(
+            context,
+            colorScheme,
+            userName,
+            userEmail,
+            userPhotoUrl,
+          ),
           const SizedBox(height: 25),
 
           _buildSettingsGroup(
@@ -43,7 +49,12 @@ class SettingsScreen extends StatelessWidget {
             title: 'General Settings',
             children: [
               _buildManageCategoriesTile(context, colorScheme),
-              _buildCurrencyTile(context, colorScheme, settingsProvider, availableCurrencies),
+              _buildCurrencyTile(
+                context,
+                colorScheme,
+                settingsProvider,
+                availableCurrencies,
+              ),
             ],
           ),
           const SizedBox(height: 20),
@@ -52,28 +63,28 @@ class SettingsScreen extends StatelessWidget {
             context,
             colorScheme,
             title: 'Appearance',
-            children: [
-              _buildDarkModeTile(context, colorScheme, themeProvider),
-            ],
+            children: [_buildDarkModeTile(context, colorScheme, themeProvider)],
           ),
           const SizedBox(height: 40),
 
           _buildLogoutButton(context, colorScheme, authService),
-
         ],
       ),
     );
   }
 
-  Widget _buildAccountCard(BuildContext context, ColorScheme colorScheme, String userName, String userEmail) {
+  Widget _buildAccountCard(
+    BuildContext context,
+    ColorScheme colorScheme,
+    String userName,
+    String userEmail,
+    String userPhotoUrl,
+  ) {
     return Card(
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
-        side: BorderSide(
-          color: colorScheme.outline.withAlpha(153),
-          width: 1.0,
-        ),
+        side: BorderSide(color: colorScheme.outline.withAlpha(153), width: 1.0),
       ),
       elevation: 0,
       child: Padding(
@@ -82,8 +93,9 @@ class SettingsScreen extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 30,
-              backgroundColor: colorScheme.primaryContainer,
-              child: Icon(Icons.person, size: 30, color: colorScheme.primary),
+              backgroundImage: userPhotoUrl.isNotEmpty
+                  ? NetworkImage(userPhotoUrl)
+                  : Image.asset('assets/images/default_user.png').image
             ),
             const SizedBox(width: 15),
             Column(
@@ -114,7 +126,11 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _buildSettingsGroup(
-      BuildContext context, ColorScheme colorScheme, {required String title, required List<Widget> children}) {
+    BuildContext context,
+    ColorScheme colorScheme, {
+    required String title,
+    required List<Widget> children,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -135,15 +151,16 @@ class SettingsScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
             border: Border.all(color: colorScheme.outline.withAlpha(153)),
           ),
-          child: Column(
-            children: children,
-          ),
+          child: Column(children: children),
         ),
       ],
     );
   }
 
-  Widget _buildManageCategoriesTile(BuildContext context, ColorScheme colorScheme) {
+  Widget _buildManageCategoriesTile(
+    BuildContext context,
+    ColorScheme colorScheme,
+  ) {
     return ListTile(
       leading: Icon(Icons.category, color: colorScheme.secondary),
       title: const Text('Manage Categories'),
@@ -158,7 +175,12 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCurrencyTile(BuildContext context, ColorScheme colorScheme, SettingsProvider settingsProvider, List<CurrencyModel> availableCurrencies) {
+  Widget _buildCurrencyTile(
+    BuildContext context,
+    ColorScheme colorScheme,
+    SettingsProvider settingsProvider,
+    List<CurrencyModel> availableCurrencies,
+  ) {
     return ListTile(
       leading: Icon(Icons.currency_exchange, color: colorScheme.secondary),
       title: const Text('Currency'),
@@ -168,7 +190,10 @@ class SettingsScreen extends StatelessWidget {
           items: availableCurrencies.map((CurrencyModel currency) {
             return DropdownMenuItem<String>(
               value: currency.symbol,
-              child: Text('${currency.code} (${currency.symbol})', style: TextStyle(color: colorScheme.onSurface)),
+              child: Text(
+                '${currency.code} (${currency.symbol})',
+                style: TextStyle(color: colorScheme.onSurface),
+              ),
             );
           }).toList(),
           onChanged: (String? newValue) {
@@ -185,7 +210,11 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDarkModeTile(BuildContext context, ColorScheme colorScheme, ThemeProvider themeProvider) {
+  Widget _buildDarkModeTile(
+    BuildContext context,
+    ColorScheme colorScheme,
+    ThemeProvider themeProvider,
+  ) {
     return ListTile(
       leading: Icon(Icons.dark_mode, color: colorScheme.secondary),
       title: const Text('Dark Mode'),
@@ -199,13 +228,20 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLogoutButton(BuildContext context, ColorScheme colorScheme, AuthService authService) {
+  Widget _buildLogoutButton(
+    BuildContext context,
+    ColorScheme colorScheme,
+    AuthService authService,
+  ) {
     return OutlinedButton.icon(
       onPressed: () async {
         await authService.signOut();
       },
       icon: Icon(Icons.logout, color: colorScheme.error),
-      label: Text('Logout', style: TextStyle(color: colorScheme.error, fontWeight: FontWeight.bold)),
+      label: Text(
+        'Logout',
+        style: TextStyle(color: colorScheme.error, fontWeight: FontWeight.bold),
+      ),
 
       style: OutlinedButton.styleFrom(
         backgroundColor: colorScheme.error.withAlpha(20),
