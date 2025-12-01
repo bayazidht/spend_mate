@@ -189,7 +189,7 @@ class SettingsScreen extends StatelessWidget {
           value: settingsProvider.selectedCurrency,
           items: availableCurrencies.map((CurrencyModel currency) {
             return DropdownMenuItem<String>(
-              value: currency.symbol,
+              value: currency.code,
               child: Text(
                 '${currency.code} (${currency.symbol})',
                 style: TextStyle(color: colorScheme.onSurface),
