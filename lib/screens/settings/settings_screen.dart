@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:spend_mate/data/default_currencies.dart';
 import 'package:spend_mate/services/auth_service.dart';
 import 'package:spend_mate/screens/settings/manage_categories_screen.dart';
+import '../../models/currency_model.dart';
 import '../../providers/settings_provider.dart';
 import '../../providers/theme_provider.dart';
 
@@ -18,7 +20,7 @@ class SettingsScreen extends StatelessWidget {
     final authService = Provider.of<AuthService>(context, listen: false);
     final themeProvider = Provider.of<ThemeProvider>(context);
     final settingsProvider = Provider.of<SettingsProvider>(context);
-    final availableCurrencies = ['€', '\$', '₩', '£', '₹'];
+    final availableCurrencies = defaultCurrencies;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -156,17 +158,17 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCurrencyTile(BuildContext context, ColorScheme colorScheme, SettingsProvider settingsProvider, List<String> availableCurrencies) {
+  Widget _buildCurrencyTile(BuildContext context, ColorScheme colorScheme, SettingsProvider settingsProvider, List<CurrencyModel> availableCurrencies) {
     return ListTile(
       leading: Icon(Icons.currency_exchange, color: colorScheme.secondary),
       title: const Text('Currency'),
       trailing: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: settingsProvider.selectedCurrency,
-          items: availableCurrencies.map((String value) {
+          items: availableCurrencies.map((CurrencyModel currency) {
             return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value, style: TextStyle(color: colorScheme.onSurface)),
+              value: currency.symbol,
+              child: Text('${currency.code} (${currency.symbol})', style: TextStyle(color: colorScheme.onSurface)),
             );
           }).toList(),
           onChanged: (String? newValue) {
@@ -189,7 +191,7 @@ class SettingsScreen extends StatelessWidget {
       title: const Text('Dark Mode'),
       trailing: Switch(
         value: themeProvider.isDarkMode,
-        activeColor: colorScheme.primary,
+        activeThumbColor: colorScheme.primary,
         onChanged: (newValue) {
           themeProvider.toggleTheme(newValue);
         },
