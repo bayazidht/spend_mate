@@ -20,8 +20,6 @@ class TransactionDetailScreen extends StatelessWidget {
     final isIncome = transaction.type == TransactionType.income;
 
     final amountColor = isIncome ? colorScheme.primary : colorScheme.error;
-    final typeColor = isIncome ? colorScheme.primary : colorScheme.error;
-
 
     Future<void> deleteTransaction() async {
       final bool? confirm = await showDialog<bool>(

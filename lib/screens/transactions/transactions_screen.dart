@@ -48,16 +48,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> with SingleTick
         backgroundColor: colorScheme.primary,
         foregroundColor: colorScheme.onPrimary,
         elevation: 1,
-
         bottom: TabBar(
           controller: _tabController,
           indicatorSize: TabBarIndicatorSize.tab,
           indicatorWeight: 4,
           indicatorColor: colorScheme.onPrimary,
-
           labelColor: colorScheme.onPrimary,
           unselectedLabelColor: colorScheme.onPrimary.withAlpha(178),
-
           tabs: const [
             Tab(text: 'All'),
             Tab(text: 'Income'),

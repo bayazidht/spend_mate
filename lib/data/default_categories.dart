@@ -25,12 +25,36 @@ final List<CategoryModel> defaultExpenseCategories = [
     type: CategoryType.expense,
     userId: 'default',
   ),
+  CategoryModel(
+    id: '',
+    name: 'Entertainment',
+    type: CategoryType.expense,
+    userId: 'default',
+  ),
+  CategoryModel(
+    id: '',
+    name: 'Healthcare',
+    type: CategoryType.expense,
+    userId: 'default',
+  ),
+  CategoryModel(
+    id: '',
+    name: 'Other',
+    type: CategoryType.expense,
+    userId: 'default',
+  ),
 ];
 
 final List<CategoryModel> defaultIncomeCategories = [
   CategoryModel(
     id: '',
     name: 'Salary',
+    type: CategoryType.income,
+    userId: 'default',
+  ),
+  CategoryModel(
+    id: '',
+    name: 'Freelance',
     type: CategoryType.income,
     userId: 'default',
   ),
@@ -43,6 +67,12 @@ final List<CategoryModel> defaultIncomeCategories = [
   CategoryModel(
     id: '',
     name: 'Gift',
+    type: CategoryType.income,
+    userId: 'default',
+  ),
+  CategoryModel(
+    id: '',
+    name: 'Other',
     type: CategoryType.income,
     userId: 'default',
   ),

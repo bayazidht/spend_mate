@@ -200,20 +200,18 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _buildLogoutButton(BuildContext context, ColorScheme colorScheme, AuthService authService) {
-    return ElevatedButton.icon(
+    return OutlinedButton.icon(
       onPressed: () async {
         await authService.signOut();
       },
-      icon: const Icon(Icons.logout),
-      label: const Text('Logout', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+      icon: Icon(Icons.logout, color: colorScheme.error),
+      label: Text('Logout', style: TextStyle(color: colorScheme.error, fontWeight: FontWeight.bold)),
 
-      style: ElevatedButton.styleFrom(
+      style: OutlinedButton.styleFrom(
+        backgroundColor: colorScheme.error.withAlpha(20),
         minimumSize: const Size(double.infinity, 50),
-        backgroundColor: colorScheme.error,
-        foregroundColor: colorScheme.onError,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        side: BorderSide(color: colorScheme.error, width: 1.0),
       ),
     );
   }

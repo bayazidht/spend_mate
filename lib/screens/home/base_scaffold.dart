@@ -36,19 +36,15 @@ class BaseScaffoldState extends State<BaseScaffold> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      // Body will switch between screens
       body: _widgetOptions.elementAt(_selectedIndex),
-
-      // Floating Action Button (FAB)
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Add Transaction Screen এ নেভিগেট করা
           Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
           );
         },
-        backgroundColor: colorScheme.secondary,
-        foregroundColor: colorScheme.onSecondary,
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
         shape: const CircleBorder(),
         elevation: 8,
         child: const Icon(Icons.add, size: 30),
