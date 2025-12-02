@@ -81,19 +81,19 @@ class TransactionDetailScreen extends StatelessWidget {
       }
     }
 
-    void editTransaction() {
-      Navigator.of(context)
-          .push(
-            MaterialPageRoute(
-              builder: (context) =>
-                  AddTransactionScreen(transactionToEdit: transaction),
-            ),
-          )
-          .then((_) {
+    void editTransaction() async {
+      final result = await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) =>
+              AddTransactionScreen(transactionToEdit: transaction),
+        ),
+      );
+
+      if (result == true) {
         if (Navigator.canPop(context)) {
           Navigator.pop(context);
         }
-      });
+      }
     }
 
     return Scaffold(
@@ -115,7 +115,7 @@ class TransactionDetailScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: colorScheme.onPrimary.withAlpha(20),
+                    color: colorScheme.onPrimary.withOpacity(0.15),
                   ),
                   child: Icon(
                     availableIcons[categoryModel.iconName],

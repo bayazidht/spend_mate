@@ -155,7 +155,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             const SnackBar(content: Text('Transaction added successfully!')),
           );
         }
-        Navigator.pop(context);
+        Navigator.pop(context, true);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to save transaction: $e')),
@@ -255,7 +255,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 decoration: inputDecoration.copyWith(
                   labelText: 'Amount ($currency)',
                   prefixIcon: Icon(
-                    Icons.money,
+                    Icons.paid_outlined,
                     color: colorScheme.onSurfaceVariant,
                   ),
                 ),
@@ -296,7 +296,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                             children: [
                               Icon(
                                 iconData,
-                                size: 20,
+                                size: 25,
                                 color: colorScheme.onSurfaceVariant,
                               ),
                               const SizedBox(width: 10),
@@ -326,10 +326,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               const SizedBox(height: 20),
 
               ListTile(
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 4,
-                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                   side: BorderSide(color: colorScheme.outline, width: 1.0),
@@ -340,8 +336,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   color: colorScheme.onSurfaceVariant,
                 ),
                 title: Text(
-                  'Date: ${DateFormat('EEE, MMM d, yyyy').format(_date)}',
-                  style: TextStyle(fontSize: 16, color: colorScheme.onSurface),
+                  DateFormat('EEE, MMM d, yyyy').format(_date),
+                  style: TextStyle(fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: colorScheme.onSurface),
                 ),
                 trailing: Icon(Icons.edit, color: colorScheme.secondary),
                 onTap: () => _selectDate(context),
@@ -353,11 +351,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 decoration: inputDecoration.copyWith(
                   labelText: 'Notes (Optional)',
                   prefixIcon: Icon(
-                    Icons.note,
+                    Icons.sticky_note_2_outlined,
                     color: colorScheme.onSurfaceVariant,
                   ),
                 ),
-                maxLines: 3,
+                maxLines: 4,
                 minLines: 1,
                 onSaved: (value) {
                   _notes = value ?? '';
@@ -380,7 +378,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   isEditing ? 'Update Transaction' : 'Save Transaction',
                   style: const TextStyle(
                     fontSize: 18,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),

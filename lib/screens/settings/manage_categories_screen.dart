@@ -178,6 +178,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
                         ),
                       ),
                     ),
+                    const SizedBox(height: 20)
                   ],
                 ),
               ),
