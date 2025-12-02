@@ -11,8 +11,8 @@ class GraphsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<TransactionProvider>(context);
-    final chartData = provider.getChartData();
+    final transactionProvider = Provider.of<TransactionProvider>(context);
+    final chartData = transactionProvider.getChartData(context);
     final currency = Provider.of<SettingsProvider>(context).selectedCurrency;
     final colorScheme = Theme.of(context).colorScheme;
 

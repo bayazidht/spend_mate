@@ -35,7 +35,7 @@ class TransactionItem extends StatelessWidget {
 
     return ListTile(
       leading: CircleAvatar(
-        radius: 20,
+        radius: 25,
         backgroundColor: bgColor,
         child: Icon(categoryIconData,
           color: iconColor,

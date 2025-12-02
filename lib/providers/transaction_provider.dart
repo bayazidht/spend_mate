@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:spend_mate/models/transaction_model.dart';
 import 'package:spend_mate/services/transaction_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
+
+import 'category_provider.dart';
 
 class TransactionProvider with ChangeNotifier {
   List<TransactionModel> _transactions = [];
@@ -58,14 +61,17 @@ class TransactionProvider with ChangeNotifier {
     }
   }
 
-  Map<String, dynamic> getChartData() {
+  Map<String, dynamic> getChartData(BuildContext context) {
     Map<String, double> categoryExpenses = {};
     double totalExpense = 0.0;
+
+    final categoryProvider = Provider.of<CategoryProvider>(context);
 
     for (var tx in _transactions) {
       if (tx.type == TransactionType.expense) {
         totalExpense += tx.amount;
-        categoryExpenses[tx.categoryId] = (categoryExpenses[tx.categoryId] ?? 0) + tx.amount;
+        final String categoryName = categoryProvider.getCategoryById(tx.categoryId).name;
+        categoryExpenses[categoryName] = (categoryExpenses[categoryName] ?? 0) + tx.amount;
       }
     }
 
