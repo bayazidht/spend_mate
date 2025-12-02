@@ -7,6 +7,7 @@ import 'package:spend_mate/screens/settings/manage_categories_screen.dart';
 import '../../models/currency_model.dart';
 import '../../providers/settings_provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../widgets/about_us_dialog.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -65,6 +66,17 @@ class SettingsScreen extends StatelessWidget {
             title: 'Appearance',
             children: [_buildDarkModeTile(context, colorScheme, themeProvider)],
           ),
+          const SizedBox(height: 20),
+
+          _buildSettingsGroup(
+            context,
+            colorScheme,
+            title: 'About',
+            children: [
+              _buildAppVersionTile(context, colorScheme),
+              _buildAboutUsTile(context, colorScheme),
+            ],
+          ),
           const SizedBox(height: 40),
 
           _buildLogoutButton(context, colorScheme, authService),
@@ -95,7 +107,7 @@ class SettingsScreen extends StatelessWidget {
               radius: 30,
               backgroundImage: userPhotoUrl.isNotEmpty
                   ? NetworkImage(userPhotoUrl)
-                  : Image.asset('assets/images/default_user.png').image
+                  : Image.asset('assets/images/default_user.png').image,
             ),
             const SizedBox(width: 15),
             Column(
@@ -229,6 +241,25 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildAppVersionTile(BuildContext context, ColorScheme colorScheme) {
+    return ListTile(
+      leading: Icon(Icons.info_outline, color: colorScheme.secondary),
+      title: const Text('App Version'),
+      trailing: const Text('1.0.0', style: TextStyle(fontSize: 14)),
+    );
+  }
+
+  Widget _buildAboutUsTile(BuildContext context, ColorScheme colorScheme) {
+    return ListTile(
+      leading: Icon(Icons.people, color: colorScheme.secondary),
+      title: const Text('About Us'),
+      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+      onTap: () {
+        showCustomAboutDialog(context);
+      },
+    );
+  }
+
   Widget _buildLogoutButton(
     BuildContext context,
     ColorScheme colorScheme,
@@ -243,7 +274,6 @@ class SettingsScreen extends StatelessWidget {
         'Logout',
         style: TextStyle(color: colorScheme.error, fontWeight: FontWeight.bold),
       ),
-
       style: OutlinedButton.styleFrom(
         backgroundColor: colorScheme.error.withAlpha(20),
         minimumSize: const Size(double.infinity, 50),
