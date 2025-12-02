@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
     final totalIncome = provider.totalIncome;
     final totalExpense = provider.totalExpense;
 
-    final recentTransactions = provider.transactions.reversed.take(3).toList();
+    final recentTransactions = provider.transactions.reversed.take(2).toList();
 
     Map<String, double> getFilteredSummary(List<TransactionModel> transactions, {bool today = false}) {
       double income = 0.0;

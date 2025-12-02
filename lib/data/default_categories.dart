@@ -55,7 +55,7 @@ final List<CategoryModel> defaultIncomeCategories = [
   CategoryModel(
     id: '',
     name: 'Freelance',
-    iconName: 'salary',
+    iconName: 'freelance',
     type: CategoryType.income
   ),
   CategoryModel(

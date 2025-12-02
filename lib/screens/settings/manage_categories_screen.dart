@@ -34,10 +34,10 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
     Function(String) onIconSelected,
   ) {
     return SizedBox(
-      height: 300,
+      height: 200,
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 5,
+          crossAxisCount: 6,
           childAspectRatio: 1.0,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
@@ -173,8 +173,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
                       child: const Text(
                         'Add Category',
                         style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 18
                         ),
                       ),
                     ),
@@ -262,8 +261,8 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
             children: [
               Icon(
                 type == CategoryType.income
-                    ? Icons.payments_rounded
-                    : Icons.shopping_bag_rounded,
+                    ? Icons.payments_outlined
+                    : Icons.shopping_bag_outlined,
                 size: 60,
                 color: colorScheme.outlineVariant,
               ),

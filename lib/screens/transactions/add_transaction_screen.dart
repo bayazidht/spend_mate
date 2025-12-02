@@ -233,12 +233,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   ButtonSegment<CategoryType>(
                     value: CategoryType.expense,
                     label: Text('Expense'),
-                    icon: Icon(Icons.arrow_downward),
+                    icon: Icon(Icons.shopping_bag_outlined),
                   ),
                   ButtonSegment<CategoryType>(
                     value: CategoryType.income,
                     label: Text('Income'),
-                    icon: Icon(Icons.arrow_upward),
+                    icon: Icon(Icons.payments_outlined),
                   ),
                 ],
               ),
@@ -289,7 +289,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       ),
                       initialValue: _selectedCategoryId,
                       items: currentCategories.map((CategoryModel category) {
-                        final IconData? iconData = availableIcons[category.iconName];
+                        final IconData? iconData =
+                            availableIcons[category.iconName];
                         return DropdownMenuItem<String>(
                           value: category.id,
                           child: Row(
@@ -337,9 +338,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ),
                 title: Text(
                   DateFormat('EEE, MMM d, yyyy').format(_date),
-                  style: TextStyle(fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: colorScheme.onSurface),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: colorScheme.onSurface,
+                  ),
                 ),
                 trailing: Icon(Icons.edit, color: colorScheme.secondary),
                 onTap: () => _selectDate(context),
@@ -376,9 +379,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ),
                 child: Text(
                   isEditing ? 'Update Transaction' : 'Save Transaction',
-                  style: const TextStyle(
-                    fontSize: 18,
-                  ),
+                  style: const TextStyle(fontSize: 18),
                 ),
               ),
             ],

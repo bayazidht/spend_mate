@@ -380,9 +380,9 @@ class _TransactionsScreenState extends State<TransactionsScreen>
           ? 'Expense'
           : 'Transactions';
       final icon = tabIndex == 1
-          ? Icons.arrow_downward
+          ? Icons.payments_outlined
           : tabIndex == 2
-          ? Icons.arrow_upward
+          ? Icons.shopping_bag_outlined
           : Icons.description;
       final iconColor = tabIndex == 1 ? colorScheme.primary : colorScheme.error;
 
