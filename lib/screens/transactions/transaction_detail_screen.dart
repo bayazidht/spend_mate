@@ -89,7 +89,7 @@ class TransactionDetailScreen extends StatelessWidget {
         ),
       );
 
-      if (result == true) {
+      if (result == true && context.mounted) {
         if (Navigator.canPop(context)) {
           Navigator.pop(context);
         }
@@ -115,7 +115,7 @@ class TransactionDetailScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: colorScheme.onPrimary.withOpacity(0.15),
+                    color: colorScheme.onPrimary.withAlpha(25),
                   ),
                   child: Icon(
                     availableIcons[categoryModel.iconName],

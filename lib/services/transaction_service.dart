@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:spend_mate/models/transaction_model.dart';
 
 class TransactionService {
@@ -56,7 +57,9 @@ class TransactionService {
       }
 
       await batch.commit();
-      print("Successfully deleted ${snapshot.docs.length} transactions for category: $categoryName");
+      if (kDebugMode) {
+        print("Successfully deleted ${snapshot.docs.length} transactions for category: $categoryName");
+      }
     }
   }
 }

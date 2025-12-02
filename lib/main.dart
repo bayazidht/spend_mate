@@ -28,7 +28,7 @@ class SpendMateApp extends StatelessWidget {
         StreamProvider<User?>.value(
           value: AuthService().user,
           initialData: null,
-          catchError: (_, __) => null,
+          catchError: (_, _) => null,
         ),
 
         ChangeNotifierProvider(create: (_) => SettingsProvider()),

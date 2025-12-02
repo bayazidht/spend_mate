@@ -144,13 +144,15 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       final TransactionService service = TransactionService();
 
       try {
-        if (widget.transactionToEdit != null) {
+        if (widget.transactionToEdit != null && context.mounted) {
           await service.updateTransaction(transactionToSave);
+          if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Transaction updated successfully!')),
           );
         } else {
           await service.addTransaction(transactionToSave);
+          if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Transaction added successfully!')),
           );

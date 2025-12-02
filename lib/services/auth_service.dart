@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
@@ -10,14 +11,13 @@ class AuthService {
     if (!isInitialize) {
       await _googleSignIn.initialize(
         serverClientId:
-        '106546969378-9cl91grec47pt9ttnp7knnmfev621tfm.apps.googleusercontent.com',
+            '106546969378-9cl91grec47pt9ttnp7knnmfev621tfm.apps.googleusercontent.com',
       );
     }
     isInitialize = true;
   }
 
   Stream<User?> get user => _auth.authStateChanges();
-
 
   Future<UserCredential?> signInWithGoogle() async {
     try {
@@ -65,7 +65,9 @@ class AuthService {
       }
       return userCredential;
     } catch (e) {
-      print('Error: $e');
+      if (kDebugMode) {
+        print('Error: $e');
+      }
       rethrow;
     }
   }
@@ -75,8 +77,10 @@ class AuthService {
       await _googleSignIn.signOut();
       await _auth.signOut();
     } catch (e) {
-      print('Error signing out: $e');
-      throw e;
+      if (kDebugMode) {
+        print('Error signing out: $e');
+      }
+      rethrow;
     }
   }
 

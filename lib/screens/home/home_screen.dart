@@ -134,7 +134,7 @@ class HomeScreen extends StatelessWidget {
                             child: TransactionItem(tx: tx),
                           ),
                         ),
-                      )).toList(),
+                      )),
                   ],
                 ),
               ),
