@@ -13,7 +13,6 @@ class BaseScaffold extends StatefulWidget {
 }
 
 class BaseScaffoldState extends State<BaseScaffold> {
-  // 0: Home, 1: Transactions, 2: Graphs, 3: Settings
   int _selectedIndex = 0;
 
   void setSelectedIndex(int index) {
@@ -50,24 +49,21 @@ class BaseScaffoldState extends State<BaseScaffold> {
         child: const Icon(Icons.add, size: 30),
       ),
 
-      // FAB Position: মাঝখানে
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      // Bottom Navigation Bar
       bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(), // FAB এর জন্য খাঁজ তৈরি করবে
-        notchMargin: 8.0, // খাঁজের সাইজ
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
         color: colorScheme.surface,
-        surfaceTintColor: colorScheme.surfaceTint.withAlpha(50), // For subtle tint effect
+        surfaceTintColor: colorScheme.surfaceTint.withAlpha(50),
         elevation: 8,
-        padding: EdgeInsets.zero, // Padding reset to fix potential layout issues
+        padding: EdgeInsets.zero,
 
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Left Side: Home (0) and Transactions (1)
             Row(
-              mainAxisSize: MainAxisSize.min, // Ensure row takes minimum space
+              mainAxisSize: MainAxisSize.min,
               children: [
                 _buildNavItem(
                   context,
@@ -84,9 +80,8 @@ class BaseScaffoldState extends State<BaseScaffold> {
               ],
             ),
 
-            // Right Side: Graphs (2) and Settings (3)
             Row(
-              mainAxisSize: MainAxisSize.min, // Ensure row takes minimum space
+              mainAxisSize: MainAxisSize.min,
               children: [
                 _buildNavItem(
                   context,
@@ -108,7 +103,6 @@ class BaseScaffoldState extends State<BaseScaffold> {
     );
   }
 
-  // কাস্টম নেভিগেশন আইটেম উইজেট
   Widget _buildNavItem(BuildContext context, IconData icon, String label, int index) {
     final colorScheme = Theme.of(context).colorScheme;
     final isSelected = _selectedIndex == index;
@@ -118,10 +112,9 @@ class BaseScaffoldState extends State<BaseScaffold> {
       child: InkWell(
         onTap: () => setSelectedIndex(index),
         borderRadius: BorderRadius.circular(10),
-        // Flexible size to help with rendering in BottomAppBar Row
         child: Container(
-          width: MediaQuery.of(context).size.width / 5, // Approximate division for 4 items
-          height: 60, // Fixed height for consistent look
+          width: MediaQuery.of(context).size.width / 5,
+          height: 60,
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
           child: Column(

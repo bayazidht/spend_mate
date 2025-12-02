@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:spend_mate/services/auth_service.dart';
-import 'package:spend_mate/screens/auth/sign_in_screen.dart'; // Sign-In screen
-import 'package:spend_mate/screens/home/base_scaffold.dart'; // Main app scaffold with bottom nav
+import 'package:spend_mate/screens/auth/sign_in_screen.dart';
+import 'package:spend_mate/screens/home/base_scaffold.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({super.key});

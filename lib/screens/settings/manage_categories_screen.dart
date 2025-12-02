@@ -29,10 +29,10 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
   }
 
   Widget _buildIconGrid(
-      ColorScheme colorScheme,
-      String selectedIconName,
-      Function(String) onIconSelected,
-      ) {
+    ColorScheme colorScheme,
+    String selectedIconName,
+    Function(String) onIconSelected,
+  ) {
     return SizedBox(
       height: 300,
       child: GridView.builder(
@@ -146,15 +146,13 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
                       ),
                     ),
                     const SizedBox(height: 10),
-                    _buildIconGrid(
-                      colorScheme,
-                      currentSelectedIconName,
-                          (String newIconName) {
-                        setStateSheet(() {
-                          tempSelectedIconName = newIconName;
-                        });
-                      },
-                    ),
+                    _buildIconGrid(colorScheme, currentSelectedIconName, (
+                      String newIconName,
+                    ) {
+                      setStateSheet(() {
+                        tempSelectedIconName = newIconName;
+                      });
+                    }),
                     const SizedBox(height: 20),
                     FilledButton(
                       style: FilledButton.styleFrom(
@@ -174,7 +172,10 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
                       },
                       child: const Text(
                         'Add Category',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
@@ -246,11 +247,11 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
   }
 
   Widget _buildCategoryList(
-      List<CategoryModel> categories,
-      CategoryType type,
-      CategoryProvider provider,
-      ColorScheme colorScheme,
-      ) {
+    List<CategoryModel> categories,
+    CategoryType type,
+    CategoryProvider provider,
+    ColorScheme colorScheme,
+  ) {
     if (categories.isEmpty) {
       return Center(
         child: Padding(
@@ -322,7 +323,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen>
                   shape: BoxShape.circle,
                   color: iconColor.withAlpha(30),
                 ),
-                child: Icon(categoryIconData, color: iconColor, size: 24),
+                child: Icon(categoryIconData, color: iconColor, size: 25),
               ),
               title: Text(
                 category.name,

@@ -70,27 +70,37 @@ class TransactionProvider with ChangeNotifier {
     for (var tx in _transactions) {
       if (tx.type == TransactionType.expense) {
         totalExpense += tx.amount;
-        final String categoryName = categoryProvider.getCategoryById(tx.categoryId).name;
-        categoryExpenses[categoryName] = (categoryExpenses[categoryName] ?? 0) + tx.amount;
+        final String categoryName = categoryProvider
+            .getCategoryById(tx.categoryId)
+            .name;
+        categoryExpenses[categoryName] =
+            (categoryExpenses[categoryName] ?? 0) + tx.amount;
       }
     }
 
     Map<String, Map<String, double>> monthlySummary = {};
 
     for (var tx in _transactions) {
-      final monthKey = '${tx.date.year}-${tx.date.month.toString().padLeft(2, '0')}';
+      final monthKey =
+          '${tx.date.year}-${tx.date.month.toString().padLeft(2, '0')}';
 
-      monthlySummary.putIfAbsent(monthKey, () => {'income': 0.0, 'expense': 0.0});
+      monthlySummary.putIfAbsent(
+        monthKey,
+        () => {'income': 0.0, 'expense': 0.0},
+      );
 
       if (tx.type == TransactionType.income) {
-        monthlySummary[monthKey]!['income'] = monthlySummary[monthKey]!['income']! + tx.amount;
+        monthlySummary[monthKey]!['income'] =
+            monthlySummary[monthKey]!['income']! + tx.amount;
       } else {
-        monthlySummary[monthKey]!['expense'] = monthlySummary[monthKey]!['expense']! + tx.amount;
+        monthlySummary[monthKey]!['expense'] =
+            monthlySummary[monthKey]!['expense']! + tx.amount;
       }
     }
 
     final sortedMonthlySummary = Map.fromEntries(
-        monthlySummary.entries.toList()..sort((e1, e2) => e1.key.compareTo(e2.key))
+      monthlySummary.entries.toList()
+        ..sort((e1, e2) => e1.key.compareTo(e2.key)),
     );
 
     return {

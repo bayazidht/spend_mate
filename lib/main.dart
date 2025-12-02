@@ -5,7 +5,7 @@ import 'package:spend_mate/providers/category_provider.dart';
 import 'package:spend_mate/providers/settings_provider.dart';
 import 'package:spend_mate/providers/theme_provider.dart';
 import 'package:spend_mate/services/auth_service.dart';
-import 'package:spend_mate/providers/transaction_provider.dart'; // নতুন import
+import 'package:spend_mate/providers/transaction_provider.dart';
 import 'package:spend_mate/screens/wrapper.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
