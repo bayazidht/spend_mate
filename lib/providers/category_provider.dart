@@ -25,7 +25,14 @@ class CategoryProvider with ChangeNotifier {
   }
 
   CategoryModel getCategoryById(String id) {
-    return _categories.firstWhere((cat) => cat.id == id);
+    return _categories.firstWhere((cat) => cat.id == id, orElse: () {
+      return CategoryModel(
+        id: 'uncategorized',
+        name: 'Uncategorized',
+        type: CategoryType.expense,
+        iconName: 'general',
+      );
+    });
   }
 
   void _startListeningToCategories() {
