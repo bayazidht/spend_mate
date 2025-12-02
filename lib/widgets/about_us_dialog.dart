@@ -23,28 +23,56 @@ class AboutUsDialog extends StatelessWidget {
           Text('About Spend Mate'),
         ],
       ),
-      content: const SingleChildScrollView(
+      content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
             Text(
-                'SpendMate is a mobile-based personal finance tracking application developed as part of the Software Engineering coursework.\n\nThe project reflects modern software development practices including cloud integration, offline caching, UI/UX design, layered architecture, and real-time data handling.\n\nThis work was completed as a group effort, where the team collaboratively contributed to system analysis, documentation, requirement specification, and design modeling.\n\nThe application implementation and development phase was led by Syed Bayazid Hossain, ensuring that the design specifications were transformed into a functional mobile system.'),
-            SizedBox(height: 20),
+                'Spend Mate is a mobile personal finance tracker developed as a Software Engineering coursework project.'),
+            SizedBox(height: 10),
             Text(
+                'It integrates modern development practices, utilizing a layered architecture, cloud integration, offline caching, and real-time data handling. The team collaboratively performed system analysis, requirement specification, and design modeling.'),
+            SizedBox(height: 10),
+            Text(
+                'The implementation phase was led by Syed Bayazid Hossain, successfully transforming design specifications into a functional mobile system.'),
+            const SizedBox(height: 15),
+            const Text(
+              'Supervised By',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 5),
+            RichText(
+              text: TextSpan(
+                style: DefaultTextStyle.of(context).style,
+                children: const <TextSpan>[
+                  TextSpan(
+                    text: 'Professor Ibrahim Musa Ishag Musa, PhD.\n',
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  TextSpan(
+                    text:
+                        'Full Stack AI/ML R&D Scientist\nIEEE Senior Member\nAssistant Professor, Dongshin University',
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 15),
+            const Text(
               'Developed By',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 5),
-            Text(
-                'SpendMate Project Team\nDongshin University\nDepartment of Software Convergence'),
-            SizedBox(height: 10),
-            Text(
-              'Syed Bayazid Hossain (Development Lead)\nShofiqul Islam (Design & Documentation Support)\nMd Refat Islam Abir (Analysis & Review Support)\nZahid Hasan (Testing & Documentation Support)',
-              style: TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.w500),
+            const SizedBox(height: 5),
+            const Text(
+              'Spend Mate Project Team\nDongshin University\nDepartment of Software Convergence',
+            ),
+            const SizedBox(height: 5),
+            const Text(
+              'Syed Bayazid Hossain (Development Lead)\nShofiqul Islam (Analysis & Design Support)\nMd Refat Islam Abir (Documentation Support)\nZahid Hasan (Testing & Review Support)',
+              style: TextStyle(fontWeight: FontWeight.w500),
             ),
           ],
         ),
       ),
-      contentPadding: EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 10.0),
+      contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 10.0),
       actions: <Widget>[
         TextButton(
           child: const Text('Close'),
