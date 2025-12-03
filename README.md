@@ -49,7 +49,7 @@ Take a look at the core functionalities and interface of Spend Mate:
 
 ### Supervised By
 
-Professor **Ibrahim Musa Ishag Musa, PhD.**   [![GitHub Profile](https://img.shields.io/badge/GitHub-Profile-100000?style=flat&logo=github&logoColor=white)]([PROFESSOR'S_GITHUB_PROFILE_LINK](https://github.com/ibrahimishag))  
+Professor **Ibrahim Musa Ishag Musa, PhD.**   [![GitHub Profile](https://img.shields.io/badge/GitHub-Profile-100000?style=flat&logo=github&logoColor=white)](https://github.com/ibrahimishag)  
 Full Stack AI/ML R&D Scientist  
 IEEE Senior Member  
 Assistant Professor, Dongshin University  
