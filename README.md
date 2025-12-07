@@ -62,10 +62,10 @@ Assistant Professor, Dongshin University
 Dongshin University  
 Department of Software Convergence
 
-* Syed Bayazid Hossain (Development Lead)
-* Shofiqul Islam (Analysis & Design Support)
-* Md Refat Islam Abir (Documentation Support)
-* Zahid Hasan (Testing & Review Support)
+* Shofiqul Islam (Requirements Analysis)
+* Syed Bayazid Hossain (Design & Development)
+* Zahid Hasan (Testing & Review)
+* Md Refat Islam Abir (Documentation)
 
 ## 🚀 Getting Started
 
