@@ -62,7 +62,7 @@ Assistant Professor, Dongshin University
 Dongshin University  
 Department of Software Convergence
 
-* Shofiqul Islam (Requirements Analysis)
+* Shofiqul Islam (Requirements & Analysis)
 * Syed Bayazid Hossain (Design & Development)
 * Zahid Hasan (Testing & Review)
 * Md Refat Islam Abir (Documentation)
