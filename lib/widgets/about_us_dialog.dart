@@ -26,13 +26,13 @@ class AboutUsDialog extends StatelessWidget {
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
-            Text(
+            const Text(
                 'Spend Mate is a mobile personal finance tracker developed as a Software Engineering coursework project.'),
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
                 'It integrates modern development practices, utilizing a layered architecture, cloud integration, offline caching, and real-time data handling. The team collaboratively performed system analysis, requirement specification, and design modeling.'),
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
                 'The implementation phase was led by Syed Bayazid Hossain, successfully transforming design specifications into a functional mobile system.'),
             const SizedBox(height: 15),
             const Text(
@@ -66,7 +66,7 @@ class AboutUsDialog extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             const Text(
-              'Syed Bayazid Hossain (Development Lead)\nShofiqul Islam (Analysis & Design Support)\nMd Refat Islam Abir (Documentation Support)\nZahid Hasan (Testing & Review Support)',
+              'Shofiqul Islam (Requirements & Analysis)\nSyed Bayazid Hossain (Design & Development)\nZahid Hasan (Testing & Review)\nMd Refat Islam Abir (Documentation)',
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
           ],
