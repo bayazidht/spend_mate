@@ -45,28 +45,6 @@ Take a look at the core functionalities and interface of Spend Mate:
 * **Database/Backend:** Firebase Authentication & Firestore
 * **Charting:** `fl_chart` package
 
-## 🎓 Project Credits
-
-### Supervised By
-
-Professor **Ibrahim Musa Ishag Musa, PhD.**   [![GitHub Profile](https://img.shields.io/badge/GitHub-Profile-100000?style=flat&logo=github&logoColor=white)](https://github.com/ibrahimishag)  
-Full Stack AI/ML R&D Scientist  
-IEEE Senior Member  
-Assistant Professor, Dongshin University  
-
-
-
-### Developed By
-
-**Spend Mate Project Team**  
-Dongshin University  
-Department of Software Convergence
-
-* Shofiqul Islam (Requirements & Analysis)
-* Syed Bayazid Hossain (Design & Development)
-* Zahid Hasan (Testing & Review)
-* Md Refat Islam Abir (Documentation)
-
 ## 🚀 Getting Started
 
 Follow these steps to set up and run the Spend Mate application on your machine.
